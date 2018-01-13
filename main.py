@@ -27,6 +27,7 @@
 import os
 import logging
 from telegram.ext import Updater, CommandHandler
+import core
 
 TOKEN = os.environ.get('TOKEN', 'token')
 
@@ -43,51 +44,55 @@ def start(bot, update):
 
 #comando claim
 def claim(bot, update):
-    update.message.reply_text('This function is not available right now')
+    update.message.reply_text('Claim command')
 
 
 #comando remove
 def remove(bot, update):
-    update.message.reply_text('This function is not available right now')
+    update.message.reply_text('Remove command')
 
 
 #comando info
 def info(bot, update):
-    update.message.reply_text('This function is not available right now')
+    update.message.reply_text('Info command')
 
 
 #comando help che mostra un messaggio di aiuto
-def help(bot, update):
+def helpme(bot, update):
     update.message.reply_text('Help command')
 
 
 #comando top
 def top(bot, update):
-    update.message.reply_text('This function is not available right now')
-
-
-#comando warns
-def warns(bot, update):
-    update.message.reply_text('This function is not available right now')
+    update.message.reply_text('Top command')
 
 
 #comando report
 def report(bot, update):
-    update.message.reply_text('This function is not available right now')
+    update.message.reply_text('Report command')
 
 
 ### ADMIN ###
 
 def admin_set(bot, update):
-    update.message.reply_text('ADMIN: This function is not available right now')
+    if core.is_from_admin(update) == False:
+        return
+
+    update.message.reply_text('ADMIN: set')
 
 
 def admin_remove(bot, update):
-    update.message.reply_text('ADMIN: This function is not available right now')
+    if core.is_from_admin(update) == False:
+        return
+
+    update.message.reply_text('ADMIN: remove')
 
 
-def admin_claim(bot, update):
-    update.message.reply_text('ADMIN: This function is not available right now')
+def admin_reserve(bot, update):
+    if core.is_from_admin(update) == False:
+        return
+
+    update.message.reply_text('ADMIN: reserve')
 
 ################################################################################################################################
 
@@ -98,20 +103,24 @@ def main():
 
     #registra comandi
     dispatcher.add_handler(CommandHandler("start", start))
+
     dispatcher.add_handler(CommandHandler("claim", claim))
+    dispatcher.add_handler(CommandHandler("set", claim))
+
     dispatcher.add_handler(CommandHandler("remove", remove))
+    dispatcher.add_handler(CommandHandler("rm", remove))
+
     dispatcher.add_handler(CommandHandler("info", info))
 
-    dispatcher.add_handler(CommandHandler("help", help))
+    dispatcher.add_handler(CommandHandler("help", helpme))
     dispatcher.add_handler(CommandHandler("top", top))
 
-    dispatcher.add_handler(CommandHandler("warns", warns))
     dispatcher.add_handler(CommandHandler("report", report))
 
     #comandi admin
     dispatcher.add_handler(CommandHandler("aset", admin_set))
-    dispatcher.add_handler(CommandHandler("aremove",start))
-    dispatcher.add_handler(CommandHandler("areserve",start))
+    dispatcher.add_handler(CommandHandler("arm", admin_remove))
+    dispatcher.add_handler(CommandHandler("ars", admin_reserve))
 
     # start bot
     updater.start_polling()
