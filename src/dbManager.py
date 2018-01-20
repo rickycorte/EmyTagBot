@@ -150,7 +150,7 @@ def create_hashtag(hashtag, update, data, reserved):
     hashtag = hashtag.lower()
 
     #i messaggi senza username non sono accettabili se non si tratta di una richiesta del sistema
-    if reserved == False and not "from" in update["message"]: 
+    if reserved == False and update.message.from_user is None: 
         return 
 
     print("creating hashtag "+hashtag)
@@ -170,7 +170,7 @@ def create_hashtag(hashtag, update, data, reserved):
     if reserved == False:
         user_id = update.message.from_user.id
 
-        if update.message.from_user.username in not None:
+        if update.message.from_user.username is not None:
             username = update.message.from_user.username
         else: 
             username = ""
@@ -183,7 +183,7 @@ def create_hashtag(hashtag, update, data, reserved):
         if update.message.from_user.language_code is not None:
             region = update.message.from_user.language_code
 
-        chat_id = updatemessage.chat.id
+        chat_id = update.message.chat.id
 
 
         if update.message.chat.username is not None:

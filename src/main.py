@@ -37,6 +37,7 @@ TOKEN = os.environ.get('TOKEN', 'token')
 ADMIN_ID = os.environ.get('ADMIN', 0)
 
 MAX_HASHTAG_SIZE = os.environ.get('MAX_HASHTAG_SIZE', 128)
+MAX_TEXT_SIZE = os.environ.get('MAX_TEXT_SIZE', 512)
 
 checker = string.ascii_letters + string.digits
 
@@ -144,6 +145,35 @@ def validate_cmd(text):
     
     return check_if_hashtag(parts[1])
 
+#restituisce i dati contenuti nel messaggio
+# none in caso di errore
+def get_message_data(message):
+
+        if message.text is not None:
+            if len(message.text) > MAX_TEXT_SIZE:
+                return None
+
+            return {"type":"text", "data": message.text } 
+
+        if message.document is not None:
+            return {"type":"gif", "data": message.document.file_id}
+
+        if message.photo is not None:
+            return {"type":"image", "data":message.photo[0].file_id}
+
+        if message.sticker is not None:
+            return {"type":"sticker", "data": message.sticker.file_id}
+
+        if message.audio is not None:
+            return {"type":"audio", "data": message.audio.file_id}     
+
+        if message.video is not None:
+            return {"type":"video", "data":message.video.file_id}
+
+        if message.voice is not None:
+            return {"type":"voice", "data":message.voice.file_id}
+
+
 
 # Command Handlers #
 ################################################################################################################################
@@ -158,7 +188,30 @@ def start(bot, update):
 
 #comando claim
 def claim(bot, update):
-    update.message.reply_text('Claim command')
+    tag = validate_cmd(update.message.text)
+
+    if tag is None:
+        update.message.reply_text(texts.claim_reply)
+        return
+
+    #controlla che sia stato quotato un messaggio
+    if update.message.reply_to_message is None:
+        update.message.reply_text(texts.quote_missing)
+        return
+
+    #cerca di creare il tag se possibile
+    if dbManager.can_write_hashtag(tag, update.message.from_user.id) == 0:
+        data = get_message_data(update.message.reply_to_message)
+
+        #controlla validita dati
+        if data is None:
+            update.message.reply_text(texts.too_much_chars)
+        else:
+           dbManager.create_hashtag(tag, update, data, False)
+           update.message.reply_text(texts.claim_ok + tag)  
+
+    else:
+      update.message.reply_text(texts.claim_error) 
 
     print("count#commands.claim=1")
 
@@ -172,7 +225,7 @@ def remove(bot, update):
         return
     
     #controlla se e' possibile rimuovere il tag
-    if dbManager.can_write_hashtag(tag, update.message.from_user.id):
+    if dbManager.can_write_hashtag(tag, update.message.from_user.id) == 0:
         #rimuovi il tag
         dbManager.delete_hashtag(tag)
         update.message.reply_text(texts.tag_remove_ok)
@@ -184,7 +237,7 @@ def remove(bot, update):
 
 #comando info
 def info(bot, update):
-    update.message.reply_text('Info command')
+    update.message.reply_text('Not available right now')
 
     print("count#commands.info=1")
 
@@ -205,7 +258,7 @@ def top(bot, update):
 
 #comando report
 def report(bot, update):
-    update.message.reply_text('Report command')
+    update.message.reply_text('Not available right now')
 
     print("count#commands.report=1")
 
@@ -214,35 +267,56 @@ def report(bot, update):
 ### ADMIN ###
 
 def admin_set(bot, update):
-    if core.is_from_admin(update) == False:
-        return
-
-    update.message.reply_text('ADMIN: set')
-
-
-def admin_remove(bot, update):
-    if core.is_from_admin(update) == False:
+    if is_from_admin(update) == False:
         return
 
     tag = validate_cmd(update.message.text)
-    if  is None:
+
+    if tag is None:
+        update.message.reply_text("Systax error, use /aset <tag> ")
+        return
+
+    #controlla che sia stato quotato un messaggio
+    if update.message.reply_to_message is None:
+        update.message.reply_text(texts.quote_missing)
+        return
+
+    #crea il tag
+    data = get_message_data(update.reply_to_message)
+
+    #controlla validita dati
+    if data is None:
+            update.message.reply_text(texts.too_much_chars)
+    else:
+           dbManager.create_hashtag(tag, None, data, True)
+           update.message.reply_text("[A] "+texts.claim_ok + tag)  
+
+
+
+def admin_remove(bot, update):
+    if is_from_admin(update) == False:
+        return
+
+    tag = validate_cmd(update.message.text)
+    if tag is None:
         update.message.reply_text("Systax error, use /arm <tag>")
         return
     
     dbManager.delete_hashtag(tag)
-    update.message.reply_text("Tag removed")
+    update.message.reply_text("[A] Tag removed")
 
 
 def admin_reserve(bot, update):
-    if core.is_from_admin(update) == False:
+    if is_from_admin(update) == False:
         return
 
     tag = validate_cmd(update.message.text)
-    if  is None:
-        update.message.reply_text("Systax error, use /arm <tag>")
+    if tag is None:
+        update.message.reply_text("Systax error, use /ars <tag>")
         return
 
     dbManager.create_hashtag(tag, None, {"type": "text", "data": "Sorry this tag is reserved"}, True)
+    update.message.reply_text("[A] Tag reserved")
 
 
 # Message Handlers #
