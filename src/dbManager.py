@@ -30,7 +30,7 @@ import os
 
 client = MongoClient( os.environ.get('MONGODB_URI', 'error') )
 
-top_list_size = int(os.environ.get('TOP_LIST_SIZE', 10))
+top_list_size = int( os.environ.get('TOP_LIST_SIZE', 10) )
 
 db = client[ os.environ.get('DB_NAME', 'EmyTagBot') ] 
 

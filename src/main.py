@@ -36,8 +36,8 @@ import string
 TOKEN = os.environ.get('TOKEN', 'token')
 ADMIN_ID = os.environ.get('ADMIN', 0)
 
-MAX_HASHTAG_SIZE = os.environ.get('MAX_HASHTAG_SIZE', 128)
-MAX_TEXT_SIZE = os.environ.get('MAX_TEXT_SIZE', 512)
+MAX_HASHTAG_SIZE = int( os.environ.get('MAX_HASHTAG_SIZE', 128) )
+MAX_TEXT_SIZE = int( os.environ.get('MAX_TEXT_SIZE', 512) )
 
 checker = string.ascii_letters + string.digits
 
