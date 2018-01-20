@@ -42,7 +42,7 @@ reserved_tag_placeholder_name = os.environ.get('RESERVED_TAG_PLACEHOLDER', 'EmyT
 # 1 = no perche e' di un altro utente
 # 2 = e' riservato
 def can_write_hashtag(hashtag, user_id):
-    print("checking hashtag write permission for"+ hashtag)
+    print("checking hashtag write permission for "+ hashtag)
     hashtag = hashtag.lower()
     res = db.hashtags.find_one({"hashtag": hashtag})
 
@@ -154,7 +154,7 @@ def create_hashtag(hashtag, update, data, reserved):
         return 
 
     print("creating hashtag "+hashtag)
-    print("count#requests.create_hashtag")
+    print("count#requests.create_hashtag=1")
 
     #inizializza i valori da inserire a quelli basi del sistema
     username = "@" + reserved_tag_placeholder_name
@@ -168,30 +168,30 @@ def create_hashtag(hashtag, update, data, reserved):
 
     #se la richiesta non e' eseguita dal sistema interno allora recupera i dati dell'utente
     if reserved == False:
-        user_id = update["message"]["from"]["id"]
+        user_id = update.message.from_user.id
 
-        if "username" in update["message"]["from"]:
-            username = update["message"]["from"]["username"]
+        if update.message.from_user.username in not None:
+            username = update.message.from_user.username
         else: 
             username = ""
 
-        first_name = update["message"]["from"]["first_name"]
+        first_name = update.message.from_user.first_name
 
-        if "last_name" in update["message"]["from"]:
-            last_name = update["message"]["from"]["last_name"]
+        if update.message.from_user.last_name is not None:
+            last_name = update.message.from_user.last_name
 
-        if "language_code" in update["message"]["from"]:
-            region = update["message"]["from"]["language_code"]
+        if update.message.from_user.language_code is not None:
+            region = update.message.from_user.language_code
 
-        chat_id = update["message"]["chat"]["id"]
+        chat_id = updatemessage.chat.id
 
 
-        if "username" in update["message"]["chat"]:
-            chat_name = update["message"]["chat"]["username"]
-        elif "title" in update["message"]["chat"]:
-            chat_name = update["message"]["chat"]["title"]
+        if update.message.chat.username is not None:
+            chat_name = update.message.chat.username
+        elif update.message.chat.title is not None:
+            chat_name = update.message.chat.title
         
-        chat_type = update["message"]["chat"]["type"]   
+        chat_type = update.message.chat.type
 
     print("Retrived update data")
 
@@ -221,7 +221,7 @@ def create_hashtag(hashtag, update, data, reserved):
 
 #cancella un documento
 def delete_hashtag(hashtag):
-    print("count#requests.delete_hashtag")
+    print("count#requests.delete_hashtag=1")
     hashtag = hashtag.lower()
     db.hashtags.delete_one({"hashtag":hashtag})
     print("Deleted doc "+hashtag)

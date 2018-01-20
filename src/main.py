@@ -134,6 +134,16 @@ def get_hashtag_top_list_message():
 
     return text
 
+#convalida comandi tipo /comando #tag
+#restituisce none se ci sono stati problemi altrimenti da il tag corretto come risposta
+def validate_cmd(text):
+    parts = text.split()
+
+    if len(parts) != 2:
+        return None
+    
+    return check_if_hashtag(parts[1])
+
 
 # Command Handlers #
 ################################################################################################################################
@@ -155,7 +165,19 @@ def claim(bot, update):
 
 #comando remove
 def remove(bot, update):
-    update.message.reply_text('Remove command')
+    
+    tag = validate_cmd(update.message.text)
+    if tag is None:
+        update.message.reply_text("Systax error, use /remove <tag>")
+        return
+    
+    #controlla se e' possibile rimuovere il tag
+    if dbManager.can_write_hashtag(tag, update.message.from_user.id):
+        #rimuovi il tag
+        dbManager.delete_hashtag(tag)
+        update.message.reply_text(texts.tag_remove_ok)
+    else:
+        update.message.reply_text(texts.tag_not_owned)
 
     print("count#commands.remove=1")
 
@@ -202,14 +224,25 @@ def admin_remove(bot, update):
     if core.is_from_admin(update) == False:
         return
 
-    update.message.reply_text('ADMIN: remove')
+    tag = validate_cmd(update.message.text)
+    if  is None:
+        update.message.reply_text("Systax error, use /arm <tag>")
+        return
+    
+    dbManager.delete_hashtag(tag)
+    update.message.reply_text("Tag removed")
 
 
 def admin_reserve(bot, update):
     if core.is_from_admin(update) == False:
         return
 
-    update.message.reply_text('ADMIN: reserve')
+    tag = validate_cmd(update.message.text)
+    if  is None:
+        update.message.reply_text("Systax error, use /arm <tag>")
+        return
+
+    dbManager.create_hashtag(tag, None, {"type": "text", "data": "Sorry this tag is reserved"}, True)
 
 
 # Message Handlers #
