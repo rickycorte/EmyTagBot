@@ -75,7 +75,7 @@ def get_top_list():
 
 
 #cerca un hashtag nel database
-def search_hastag(hashtag):
+def search_hashtag(hashtag):
     hashtag = hashtag.lower()
     print("count#requests.search_hashtag=1")
 
@@ -145,7 +145,7 @@ def add_report(hashtag, user_id, report_text):
     return 0
 
 #inserisce un oggetto data {"type": "text/image/gif/sticker", "data":"..."} nel database
-def create_hashatag(hashtag, update, data, reserved):
+def create_hashtag(hashtag, update, data, reserved):
 
     hashtag = hashtag.lower()
 
@@ -220,7 +220,7 @@ def create_hashatag(hashtag, update, data, reserved):
 
 
 #cancella un documento
-def adm_delete_tag(hashtag):
+def delete_hashtag(hashtag):
     print("count#requests.delete_hashtag")
     hashtag = hashtag.lower()
     db.hashtags.delete_one({"hashtag":hashtag})

@@ -27,13 +27,18 @@
 import os
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-import core
 import texts
+import dbManager
+import string
 
 
 
 TOKEN = os.environ.get('TOKEN', 'token')
 ADMIN_ID = os.environ.get('ADMIN', 0)
+
+MAX_HASHTAG_SIZE = os.environ.get('MAX_HASHTAG_SIZE', 128)
+
+checker = string.ascii_letters + string.digits
 
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',level=logging.INFO)
@@ -42,6 +47,71 @@ logger = logging.getLogger(__name__)
 
 # Funzioni #
 ################################################################################################################################
+
+
+
+def is_hash_char(ch):
+    if ch in checker + "_":
+        return True
+    else:
+        return False
+
+def is_digit(ch):
+    if ch in string.digits:
+        return True
+    else:
+        return False
+
+#controlla che la parola passata come parametro abbia # come carattere 0 altrimenti lo aggiunge
+#restituisce None se l'hastage' invalido altrimenti ritorna il tag completo
+def check_if_hashtag(data):
+
+    #controlla che siano stati passati dei caratteri
+    if not data:
+        return None
+
+    data = data.strip().lower()
+
+    if data[0] != "#":
+        data = "#" + data
+    #evita hashtag troppo lunghi
+    if len(data) > MAX_HASHTAG_SIZE:
+        return None
+    
+    if len(data) == 2 and is_digit(data[1]): #previeni hashtag come #1
+        return None
+
+    only_digit = True
+
+    #controlla che tutti i caratteri siano ok
+    count = 1 #conta da 1 per evitare l'# che renderebbe falso il primo controllo
+    while count < len(data):
+        if not is_hash_char(data[count]):
+            return None
+        if not is_digit(data[count]):
+            only_digit = False
+        count +=1
+
+    if only_digit: #evita hashtag invalidi tipo 1234
+        return None
+
+    return data
+
+#trova e restituisce il primo hashtag trovato nel testo passato
+def find_first_hashtag(msg):
+    if msg is None:
+        return None
+
+    beg = msg.find("#")
+    end = msg.find(" ", beg)
+
+    if beg == -1:
+        return None
+
+    if end != -1:
+        return msg[beg:end-1]
+    else:
+        return msg[beg:]
 
 
 #restituisce true se l'update proviene da un admin
@@ -147,7 +217,37 @@ def admin_reserve(bot, update):
 
 
 def hashtag_message(bot, update):
-    update.message.reply_text("Found: "+update.message.text)
+    tag = check_if_hashtag( find_first_hashtag(update.message.text) )
+
+    if tag is None: 
+        return
+
+    result = dbManager.search_hashtag(tag)
+
+    #hash non trovato
+    if result["code"] != 0: 
+        return
+
+    if result["type"] == "text":
+        bot.sendMessage(update.message.chat.id,result["reply"])
+
+    if result["type"] == "image":
+        bot.sendPhoto(update.message.chat.id,result["reply"])
+
+    if result["type"] == "gif":
+        bot.sendDocument(update.message.chat.id,result["reply"])
+
+    if result["type"] == "sticker":
+        bot.sendSticker(update.message.chat.id,result["reply"])
+
+    if result["type"] == "audio":
+        bot.sendAudio(update.message.chat.id,result["reply"])
+
+    if result["type"] == "voice":
+        bot.sendVoice(update.message.chat.id,result["reply"])
+
+    if result["type"] == "video":
+        bot.sendVideo(update.message.chat.id,result["reply"])
 
 
 ################################################################################################################################
