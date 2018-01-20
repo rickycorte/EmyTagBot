@@ -39,6 +39,9 @@ ADMIN_ID = os.environ.get('ADMIN', 0)
 MAX_HASHTAG_SIZE = int( os.environ.get('MAX_HASHTAG_SIZE', 128) )
 MAX_TEXT_SIZE = int( os.environ.get('MAX_TEXT_SIZE', 512) )
 
+PORT = int(os.environ.get('PORT', '8443'))
+HEROKU_APP = os.environ.get('APP_LINK', '')
+
 checker = string.ascii_letters + string.digits
 
 
@@ -390,7 +393,11 @@ def main():
     dispatcher.add_handler(MessageHandler(Filters.entity("hashtag"), hashtag_message))
 
     # start bot
-    updater.start_polling()
+    #updater.start_polling()
+
+    updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
+    updater.bot.set_webhook(HEROKU_APP + TOKEN)
+
     updater.idle()
 
 if __name__ == '__main__':
