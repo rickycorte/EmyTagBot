@@ -36,3 +36,9 @@ too_much_chars = "I can't remember all of your text"
 claim_ok = "Yay! Have fun with: "
 
 not_found = "Did you forgot? That tag is free :3"
+
+edit_ok = " moved to "
+
+edit_tag_error = "Please check that the first tag exist and that the second one is free and the retry"
+
+edit_perm_error = "Sorry but one of the tags is not yours"

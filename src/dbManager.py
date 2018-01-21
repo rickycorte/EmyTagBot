@@ -232,6 +232,8 @@ def delete_hashtag(hashtag):
 def get_hashtag_info(hashtag):
     hashtag = hashtag.lower()
 
+    print("count#requests.hashtag_info=1")
+
     res = db.hashtags.find_one({"hashtag": hashtag})
     if res is None:
         return None
@@ -244,3 +246,31 @@ def get_hashtag_info(hashtag):
             "last_use_date": res["last_use_date"],
             "use_count": res["use_count"] 
         }
+
+
+#cambia un hashtag in un altro
+#restituisce 1 se l'operazione e' andata a buon fine 
+#0 se non e' stato possibile trovare il tag vecchio o esite gia un tag con il nome nuovo
+def change_hashtag(old_tag, new_tag):
+    old_tag = old_tag.lower()
+    new_tag = new_tag.lower()
+
+    print("count#requests.hashtag_change=1")
+
+    res = db.hashtags.find_one({"hashtag": old_tag})
+
+    #controlla che non ci sia gia anche l'altro tag
+    check = db.hashtags.find_one({"hashtag": new_tag})
+
+    if res is None or check is not None:
+        return 0 
+
+    db.hashtags.update_one( {"_id": res["_id"]}, 
+        {"$set": 
+            {
+                "hashtag": new_tag
+            } 
+        }, upsert=False)
+    return 1
+    
+

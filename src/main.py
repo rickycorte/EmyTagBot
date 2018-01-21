@@ -296,6 +296,33 @@ def top(bot, update):
 
 #comando edit
 def edit(bot, update):
+    parts = update.message.text.split()
+
+    if len(parts) != 3:
+        update.message.reply_text("Systax error, use /edit <old tag> <new tag>")
+        return
+
+    #controlla i due tag
+    old_tag = check_if_hashtag(parts[1])
+    new_tag = check_if_hashtag(parts[2])
+
+    if old_tag is None or new_tag is None:
+        update.message.reply_text("Systax error, use /edit <old tag> <new tag>")
+        return
+
+    uid = update.message.from_user.id
+    #controlla che entrambi gli hashtag siano liberi o del propietario
+    if dbManager.can_write_hashtag(old_tag, uid)== 0 and dbManager.can_write_hashtag(new_tag, uid) == 0:
+        res = dbManager.change_hashtag(old_tag, new_tag)
+
+        if res == 0:
+            update.message.reply_text(texts.edit_tag_error)
+        else:
+            update.message.reply_text(old_tag + texts.edit_ok + new_tag)
+
+    else:
+        update.message.reply_text(texts.edit_perm_error)
+        
     print("count#commands.edit=1")
 
 
@@ -437,10 +464,10 @@ def main():
     dispatcher.add_handler(MessageHandler(Filters.entity("hashtag"), hashtag_message))
 
     # start bot
-    updater.start_polling()
+    #updater.start_polling()
 
-    #updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
-    #updater.bot.set_webhook(HEROKU_APP + TOKEN)
+    updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
+    updater.bot.set_webhook(HEROKU_APP + TOKEN)
 
     updater.idle()
 
