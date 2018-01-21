@@ -34,3 +34,5 @@ quote_missing = "Please quote a message"
 too_much_chars = "I can't remember all of your text"
 
 claim_ok = "Yay! Have fun with: "
+
+not_found = "Did you forgot? That tag is free :3"

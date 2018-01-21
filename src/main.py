@@ -30,6 +30,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import texts
 import dbManager
 import string
+import datetime
 
 
 
@@ -41,6 +42,8 @@ MAX_TEXT_SIZE = int( os.environ.get('MAX_TEXT_SIZE', 512) )
 
 PORT = int(os.environ.get('PORT', '8443'))
 HEROKU_APP = os.environ.get('APP_LINK', '')
+
+HASHTAG_LIFETIME = int( os.environ.get('TAG_LIFE_TIME', 5))
 
 checker = string.ascii_letters + string.digits
 
@@ -240,8 +243,41 @@ def remove(bot, update):
 
 #comando info
 def info(bot, update):
-    update.message.reply_text('Not available right now')
+    tag = validate_cmd(update.message.text)
+    if tag is None:
+        update.message.reply_text("Systax error, use /info <tag>")
+        return
+    
+    res = dbManager.get_hashtag_info(tag)
 
+    if res is None:
+        update.message.reply_text(texts.not_found)
+        return
+
+    reply = tag+":\n"
+    if res["reserved"] == True:
+        reply += "~ Reserved by the system ~\n"
+        reply += "Type: " + res["type"] + "\n"
+        reply += "Used: " + str(res["use_count"]) + " times\n"
+        reply += "Expire: Never"     
+    else:
+        reply += "Type: " + res["type"] + "\n"
+        reply += "Used: " + str(res["use_count"]) + " times\n"
+        reply += "Creation: " + res["creation_date"].strftime("%d/%m/%y")+"\n"
+
+        dt = datetime.datetime.utcnow() - res["last_use_date"] 
+        hours_left = int( HASHTAG_LIFETIME * 24 - dt.total_seconds()/3600)
+
+        reply += "Expire: "
+        if hours_left >= 24:
+            reply += str( int(hours_left/24) )+" days"
+        else:
+            if hours_left <= 3:
+                reply += "a few moments"
+            else:
+                reply+= str(hours_left)+" hours"
+
+    update.message.reply_text(reply)
     print("count#commands.info=1")
 
 
@@ -258,12 +294,17 @@ def top(bot, update):
 
     print("count#commands.top=1")
 
+#comando edit
+def edit(bot, update):
+    print("count#commands.edit=1")
+
 
 #comando report
 def report(bot, update):
     update.message.reply_text('Not available right now')
 
     print("count#commands.report=1")
+
 
 
 
@@ -374,6 +415,8 @@ def main():
     dispatcher.add_handler(CommandHandler("claim", claim))
     dispatcher.add_handler(CommandHandler("set", claim))
 
+    dispatcher.add_handler(CommandHandler("edit", edit))
+
     dispatcher.add_handler(CommandHandler("remove", remove))
     dispatcher.add_handler(CommandHandler("rm", remove))
 
@@ -384,6 +427,7 @@ def main():
 
     dispatcher.add_handler(CommandHandler("report", report))
 
+    
     #comandi admin
     dispatcher.add_handler(CommandHandler("aset", admin_set))
     dispatcher.add_handler(CommandHandler("arm", admin_remove))
@@ -393,10 +437,10 @@ def main():
     dispatcher.add_handler(MessageHandler(Filters.entity("hashtag"), hashtag_message))
 
     # start bot
-    #updater.start_polling()
+    updater.start_polling()
 
-    updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
-    updater.bot.set_webhook(HEROKU_APP + TOKEN)
+    #updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
+    #updater.bot.set_webhook(HEROKU_APP + TOKEN)
 
     updater.idle()
 

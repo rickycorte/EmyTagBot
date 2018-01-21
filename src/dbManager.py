@@ -225,3 +225,22 @@ def delete_hashtag(hashtag):
     hashtag = hashtag.lower()
     db.hashtags.delete_one({"hashtag":hashtag})
     print("Deleted doc "+hashtag)
+
+
+#restituisce le info di un hashtag in un dict
+# none se non ha trovato nulla
+def get_hashtag_info(hashtag):
+    hashtag = hashtag.lower()
+
+    res = db.hashtags.find_one({"hashtag": hashtag})
+    if res is None:
+        return None
+    else:
+        return { 
+            "hashtag": res["hashtag"],
+            "type": res["data"]["type"],
+            "reserved": res["reserved"],
+            "creation_date": res["creation_date"],
+            "last_use_date": res["last_use_date"],
+            "use_count": res["use_count"] 
+        }
