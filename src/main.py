@@ -227,7 +227,7 @@ def remove(bot, update):
     
     tag = validate_cmd(update.message.text)
     if tag is None:
-        update.message.reply_text("Systax error, use /remove <tag>")
+        update.message.reply_text("Use /remove <tag>")
         return
     
     #controlla se e' possibile rimuovere il tag
@@ -245,7 +245,7 @@ def remove(bot, update):
 def info(bot, update):
     tag = validate_cmd(update.message.text)
     if tag is None:
-        update.message.reply_text("Systax error, use /info <tag>")
+        update.message.reply_text("Use /info <tag>")
         return
     
     res = dbManager.get_hashtag_info(tag)
@@ -299,7 +299,7 @@ def edit(bot, update):
     parts = update.message.text.split()
 
     if len(parts) != 3:
-        update.message.reply_text("Systax error, use /edit <old tag> <new tag>")
+        update.message.reply_text("Use /edit <old tag> <new tag>")
         return
 
     #controlla i due tag
@@ -307,7 +307,7 @@ def edit(bot, update):
     new_tag = check_if_hashtag(parts[2])
 
     if old_tag is None or new_tag is None:
-        update.message.reply_text("Systax error, use /edit <old tag> <new tag>")
+        update.message.reply_text("Use /edit <old tag> <new tag>")
         return
 
     uid = update.message.from_user.id
@@ -344,7 +344,7 @@ def admin_set(bot, update):
     tag = validate_cmd(update.message.text)
 
     if tag is None:
-        update.message.reply_text("Systax error, use /aset <tag> ")
+        update.message.reply_text("Use /aset <tag> ")
         return
 
     #controlla che sia stato quotato un messaggio
@@ -370,7 +370,7 @@ def admin_remove(bot, update):
 
     tag = validate_cmd(update.message.text)
     if tag is None:
-        update.message.reply_text("Systax error, use /arm <tag>")
+        update.message.reply_text("Use /arm <tag>")
         return
     
     dbManager.delete_hashtag(tag)
@@ -383,7 +383,7 @@ def admin_reserve(bot, update):
 
     tag = validate_cmd(update.message.text)
     if tag is None:
-        update.message.reply_text("Systax error, use /ars <tag>")
+        update.message.reply_text("Use /ars <tag>")
         return
 
     dbManager.create_hashtag(tag, None, {"type": "text", "data": "Sorry this tag is reserved"}, True)
