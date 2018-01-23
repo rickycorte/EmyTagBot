@@ -456,10 +456,10 @@ def main():
     dispatcher.add_handler(MessageHandler(Filters.entity("hashtag"), hashtag_message))
 
     # start bot
-    updater.start_polling()
+    #updater.start_polling()
 
-    #updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
-    #updater.bot.set_webhook(HEROKU_APP + TOKEN)
+    updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
+    updater.bot.set_webhook(HEROKU_APP + TOKEN)
 
     updater.idle()
 
