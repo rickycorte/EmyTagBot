@@ -62,7 +62,7 @@ def can_write_hashtag(hashtag, user_id):
 
 #resitituisce i 10 hashtag + usati nel formato [{"hashtag":"...", uses:..},...]    
 def get_top_list():
-    print("count#requests.top_list=1")
+    print("Getting top list")
     result = []
     res = db.hashtags.find().sort([("use_count",-1)]).limit(top_list_size)
     if not res or res is None:
@@ -77,7 +77,7 @@ def get_top_list():
 #cerca un hashtag nel database
 def search_hashtag(hashtag):
     hashtag = hashtag.lower()
-    print("count#requests.search_hashtag=1")
+    print("Searching tag "+ hashtag)
 
     res = db.hashtags.find_one({"hashtag": hashtag})
     #hashtag non trovato - corrisponde codice 1
@@ -105,7 +105,7 @@ def search_hashtag(hashtag):
 # 2 se il tag non esiste
 def add_report(hashtag, user_id, report_text):
     hashtag = hashtag.lower()
-    print("count#requests.reports=1")
+    print("Adding report to "+hashtag)
     res = db.hashtags.find_one({"hashtag": hashtag})
     #controlla se tag esiste
     if res is None:
@@ -153,8 +153,7 @@ def create_hashtag(hashtag, update, data, reserved):
     if reserved == False and update.message.from_user is None: 
         return 
 
-    print("creating hashtag "+hashtag)
-    print("count#requests.create_hashtag=1")
+    print("Creating hashtag "+hashtag)
 
     #inizializza i valori da inserire a quelli basi del sistema
     username = "@" + reserved_tag_placeholder_name
@@ -221,7 +220,7 @@ def create_hashtag(hashtag, update, data, reserved):
 
 #cancella un documento
 def delete_hashtag(hashtag):
-    print("count#requests.delete_hashtag=1")
+    print("Deleting "+hashtag)
     hashtag = hashtag.lower()
     db.hashtags.delete_one({"hashtag":hashtag})
     print("Deleted doc "+hashtag)
@@ -232,7 +231,7 @@ def delete_hashtag(hashtag):
 def get_hashtag_info(hashtag):
     hashtag = hashtag.lower()
 
-    print("count#requests.hashtag_info=1")
+    print("getting info of "+ hashtag)
 
     res = db.hashtags.find_one({"hashtag": hashtag})
     if res is None:
@@ -255,7 +254,7 @@ def change_hashtag(old_tag, new_tag):
     old_tag = old_tag.lower()
     new_tag = new_tag.lower()
 
-    print("count#requests.hashtag_change=1")
+    print("trying to move "+old_tag +" to "+new_tag)
 
     res = db.hashtags.find_one({"hashtag": old_tag})
 
@@ -263,6 +262,7 @@ def change_hashtag(old_tag, new_tag):
     check = db.hashtags.find_one({"hashtag": new_tag})
 
     if res is None or check is not None:
+        print ("Failed move")
         return 0 
 
     db.hashtags.update_one( {"_id": res["_id"]}, 
@@ -272,5 +272,6 @@ def change_hashtag(old_tag, new_tag):
             } 
         }, upsert=False)
     return 1
+    print ("move done")
     
 

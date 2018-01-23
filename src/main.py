@@ -116,7 +116,7 @@ def find_first_hashtag(msg):
         return None
 
     if end != -1:
-        return msg[beg:end-1]
+        return msg[beg:end]
     else:
         return msg[beg:]
 
@@ -164,9 +164,6 @@ def get_message_data(message):
         if message.document is not None:
             return {"type":"gif", "data": message.document.file_id}
 
-        if message.photo is not None:
-            return {"type":"image", "data":message.photo[0].file_id}
-
         if message.sticker is not None:
             return {"type":"sticker", "data": message.sticker.file_id}
 
@@ -179,6 +176,9 @@ def get_message_data(message):
         if message.voice is not None:
             return {"type":"voice", "data":message.voice.file_id}
 
+        if message.photo is not None:
+            return {"type":"image", "data":message.photo[0].file_id}
+
 
 
 # Command Handlers #
@@ -189,7 +189,6 @@ def get_message_data(message):
 def start(bot, update):
     update.message.reply_text(texts.welcome_message)
 
-    print("count#commands.start=1")
 
 
 #comando claim
@@ -219,7 +218,6 @@ def claim(bot, update):
     else:
       update.message.reply_text(texts.claim_error) 
 
-    print("count#commands.claim=1")
 
 
 #comando remove
@@ -238,7 +236,6 @@ def remove(bot, update):
     else:
         update.message.reply_text(texts.tag_not_owned)
 
-    print("count#commands.remove=1")
 
 
 #comando info
@@ -278,21 +275,18 @@ def info(bot, update):
                 reply+= str(hours_left)+" hours"
 
     update.message.reply_text(reply)
-    print("count#commands.info=1")
 
 
 #comando help che mostra un messaggio di aiuto
 def helpme(bot, update):
     update.message.reply_text(texts.help_reply)
 
-    print("count#commands.help=1")
 
 
 #comando top list hashtag
 def top(bot, update):
     update.message.reply_text(get_hashtag_top_list_message())
 
-    print("count#commands.top=1")
 
 #comando edit
 def edit(bot, update):
@@ -323,14 +317,12 @@ def edit(bot, update):
     else:
         update.message.reply_text(texts.edit_perm_error)
         
-    print("count#commands.edit=1")
 
 
 #comando report
 def report(bot, update):
     update.message.reply_text('Not available right now')
 
-    print("count#commands.report=1")
 
 
 
@@ -464,10 +456,10 @@ def main():
     dispatcher.add_handler(MessageHandler(Filters.entity("hashtag"), hashtag_message))
 
     # start bot
-    #updater.start_polling()
+    updater.start_polling()
 
-    updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
-    updater.bot.set_webhook(HEROKU_APP + TOKEN)
+    #updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
+    #updater.bot.set_webhook(HEROKU_APP + TOKEN)
 
     updater.idle()
 
