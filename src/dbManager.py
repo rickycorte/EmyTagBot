@@ -275,3 +275,18 @@ def change_hashtag(old_tag, new_tag):
     print ("move done")
     
 
+#restituisce l'array di tag che ha l'utente
+#array vuoto se non ne possiede
+def get_user_hashtags(user_id):
+    res = db.hashtags.find({ "owner.id": user_id })
+
+    hashs = []
+    for tag in res:
+        hashs.append({"tag": tag["hashtag"], "use": tag["use_count"]})
+    return hashs
+
+#restituisce il json 
+def get_firebase_json():
+    res = db.firebase.find_one()
+    del res["_id"]
+    return res

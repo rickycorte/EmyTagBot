@@ -31,7 +31,7 @@ import texts
 import dbManager
 import string
 import datetime
-
+import firebase
 
 
 TOKEN = os.environ.get('TOKEN', 'token')
@@ -323,6 +323,20 @@ def edit(bot, update):
 def report(bot, update):
     update.message.reply_text('Not available right now')
 
+#comando mytags
+def mytags(bot,update):
+    uid = update.message.from_user.id
+    name = update.message.from_user.first_name
+    username = update.message.from_user.username
+    if username is None:
+        username = ""
+
+    print("Preparing mytags data for "+ name+" @"+username)
+
+    firebase.send_data(uid,name,username,dbManager.get_user_hashtags(uid))
+
+    print(name+" page is ready")
+    update.message.reply_text(texts.mytags_message)
 
 
 
@@ -446,6 +460,7 @@ def main():
 
     dispatcher.add_handler(CommandHandler("report", report))
 
+    dispatcher.add_handler(CommandHandler("mytags", mytags))
     
     #comandi admin
     dispatcher.add_handler(CommandHandler("aset", admin_set))
@@ -456,10 +471,14 @@ def main():
     dispatcher.add_handler(MessageHandler(Filters.entity("hashtag"), hashtag_message))
 
     # start bot
-    #updater.start_polling()
 
-    updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
-    updater.bot.set_webhook(HEROKU_APP + TOKEN)
+    DEBUG = os.environ.get('DEBUG', "false")
+
+    if DEBUG != "false":
+        updater.start_polling()
+    else:
+        updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
+        updater.bot.set_webhook(HEROKU_APP + TOKEN)
 
     updater.idle()
 

@@ -42,3 +42,5 @@ edit_ok = " moved to "
 edit_tag_error = "Please check that the first tag exist and that the second one is free and the retry"
 
 edit_perm_error = "Sorry but one of the tags is not yours"
+
+mytags_message= "Your tag list is ready at: <domain>"
