@@ -336,7 +336,7 @@ def mytags(bot,update):
     firebase.send_data(uid,name,username,dbManager.get_user_hashtags(uid))
 
     print(name+" page is ready")
-    update.message.reply_text(texts.mytags_message)
+    update.message.reply_text(texts.mytags_message+str(update.message.from_user.id))
 
 
 
@@ -476,9 +476,11 @@ def main():
 
     if DEBUG != "false":
         updater.start_polling()
+        print("DEBUG MODE ON")
     else:
         updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
         updater.bot.set_webhook(HEROKU_APP + TOKEN)
+        print("PRODUCTION MODE")
 
     updater.idle()
 

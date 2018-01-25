@@ -43,4 +43,4 @@ edit_tag_error = "Please check that the first tag exist and that the second one 
 
 edit_perm_error = "Sorry but one of the tags is not yours"
 
-mytags_message= "Your tag list is ready at: <domain>"
+mytags_message= "Your tag list is ready at: https://emytagbot.ml/user.html?"
