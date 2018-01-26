@@ -28,6 +28,8 @@ from pymongo import MongoClient
 import datetime
 import os
 
+HASHTAG_LIFETIME = int( os.environ.get('TAG_LIFE_TIME', 5))
+
 client = MongoClient( os.environ.get('MONGODB_URI', 'error') )
 
 top_list_size = int( os.environ.get('TOP_LIST_SIZE', 10) )
@@ -275,6 +277,22 @@ def change_hashtag(old_tag, new_tag):
     print ("move done")
     
 
+#calcola la differenza in giorni od ore dalla data passata come parametro a oggi
+def calculate_delta_now(old_dt):
+    dt = datetime.datetime.utcnow() - old_dt 
+    hours_left = int( HASHTAG_LIFETIME * 24 - dt.total_seconds()/3600)
+    reply = ""
+    if hours_left >= 24:
+        reply = str( int(hours_left/24) )+" days"
+    else:
+        if hours_left <= 3:
+            reply = "a few moments"
+        else:
+            reply = str(hours_left)+" hours"
+
+    return reply
+
+
 #restituisce l'array di tag che ha l'utente
 #array vuoto se non ne possiede
 def get_user_hashtags(user_id):
@@ -282,7 +300,15 @@ def get_user_hashtags(user_id):
 
     hashs = []
     for tag in res:
-        hashs.append({"tag": tag["hashtag"], "use": tag["use_count"]})
+        hashs.append(
+                {
+                "tag": tag["hashtag"],
+                "use": tag["use_count"],
+                "type": tag["data"]["type"],
+                "creation": unicode(tag["creation_date"].strftime("%d/%m/%y"),"utf-8"),
+                "expire": unicode(calculate_delta_now(tag["last_use_date"]),"utf-8")
+                }
+            )
     return hashs
 
 #restituisce il json 

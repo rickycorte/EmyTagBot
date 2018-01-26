@@ -262,17 +262,7 @@ def info(bot, update):
         reply += "Used: " + str(res["use_count"]) + " times\n"
         reply += "Creation: " + res["creation_date"].strftime("%d/%m/%y")+"\n"
 
-        dt = datetime.datetime.utcnow() - res["last_use_date"] 
-        hours_left = int( HASHTAG_LIFETIME * 24 - dt.total_seconds()/3600)
-
-        reply += "Expire: "
-        if hours_left >= 24:
-            reply += str( int(hours_left/24) )+" days"
-        else:
-            if hours_left <= 3:
-                reply += "a few moments"
-            else:
-                reply+= str(hours_left)+" hours"
+        reply += "Expire: " + dbManager.calculate_delta_now(res["last_use_date"])
 
     update.message.reply_text(reply)
 
