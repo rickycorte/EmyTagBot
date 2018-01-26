@@ -305,8 +305,8 @@ def get_user_hashtags(user_id):
                 "tag": tag["hashtag"],
                 "use": tag["use_count"],
                 "type": tag["data"]["type"],
-                "creation": str(tag["creation_date"].strftime("%d/%m/%y"),"utf-8"),
-                "expire": str(calculate_delta_now(tag["last_use_date"]),"utf-8")
+                "creation": tag["creation_date"].strftime("%d/%m/%y"),
+                "expire": calculate_delta_now(tag["last_use_date"]),
                 }
             )
     return hashs
