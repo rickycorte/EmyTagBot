@@ -349,7 +349,7 @@ def admin_set(bot, update):
         return
 
     #crea il tag
-    data = get_message_data(update.reply_to_message)
+    data = get_message_data(update.message.reply_to_message)
 
     #controlla validita dati
     if data is None:
