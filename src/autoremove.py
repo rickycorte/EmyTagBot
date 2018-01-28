@@ -27,6 +27,8 @@
 from pymongo import MongoClient
 import datetime
 
+print("~~~ Removing tags ~~~")
+
 default_hashtag_lifetime = int( os.environ.get('TAG_LIFE_TIME', 5))
 
 client = MongoClient( os.environ.get('MONGODB_URI', 'error') )
@@ -35,9 +37,10 @@ db = client[ os.environ.get('DB_NAME', 'EmyTagBot') ]
 
 remove_date_sep =  datetime.datetime.utcnow() - datetime.timedelta(days=default_hashtag_lifetime)
 
-
 hashs = db.hashtags.find({"reserved":False})
 for tag in hashs:
     if tag["last_use_date"] < remove_date_sep:
-        print "Deleted "+tag["hashtag"]
+        print ("Deleted "+tag["hashtag"])
         db.hashtags.delete_one({"_id":tag["_id"]})
+
+print("~~~ Removing tags: DONE ~~~")
