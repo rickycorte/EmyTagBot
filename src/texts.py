@@ -17,7 +17,7 @@ report_send_error = "Sorry, you have just a report registered for this hashtag"
 
 report_no_tag_error = "That hashtag does not exist"
 
-report_not_allowed = "Sorry, you can't report reserved tags"
+report_not_allowed = "Sorry, you can't report system tags"
 
 top_list_error = "Nothing to show yet"
 
@@ -44,3 +44,5 @@ edit_tag_error = "Please check that the first tag exist and that the second one 
 edit_perm_error = "Sorry but one of the tags is not yours"
 
 mytags_message= "Your tag list is ready at: https://emytagbot.ml/user.html?"
+
+report_short = "Report message must be long at least 6 characters"

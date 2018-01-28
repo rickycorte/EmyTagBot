@@ -311,7 +311,40 @@ def edit(bot, update):
 
 #comando report
 def report(bot, update):
-    update.message.reply_text('Not available right now')
+    parts = update.message.text.split(" ",2)
+
+    if len(parts) != 3:
+        update.message.reply_text("Use /report <tag> <message>")
+        return
+    
+    tag = check_if_hashtag(parts[1])
+    if tag is None:
+        update.message.reply_text("Use /report <tag> <message>")
+        return
+    
+    #controlla lunghezza tag
+    if len(parts[2]) < 6:
+        update.message.reply_text(texts.report_short)
+        return
+
+    res = dbManager.add_report(tag,update.message.from_user.id, parts[2])
+
+    if res == 0:
+        update.message.reply_text(texts.report_send_success)
+        return
+
+    if res == 1:
+        update.message.reply_text(texts.report_send_error)
+        return
+
+    if res == 2:
+        update.message.reply_text(texts.report_no_tag_error)
+        return
+
+    if res == 3:
+        update.message.reply_text(texts.report_not_allowed)
+        return
+
 
 #comando mytags
 def mytags(bot,update):
