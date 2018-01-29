@@ -27,6 +27,7 @@
 from pymongo import MongoClient
 import datetime
 import os
+import adminChannel
 
 HASHTAG_LIFETIME = int( os.environ.get('TAG_LIFE_TIME', 5))
 
@@ -37,6 +38,8 @@ top_list_size = int( os.environ.get('TOP_LIST_SIZE', 10) )
 db = client[ os.environ.get('DB_NAME', 'EmyTagBot') ] 
 
 reserved_tag_placeholder_name = os.environ.get('RESERVED_TAG_PLACEHOLDER', 'EmyTagBot')
+
+MAX_REPORTS = int( os.environ.get('MAX_REPORTS', 1))
 
 
 #controlla se user_id puo claimare un determinato hashtag
@@ -105,7 +108,7 @@ def search_hashtag(hashtag):
 #ignora le segnalazioni di tag riservati e restituisce 3
 # 1 invece se il tag e' gia stato segnalato dallo stesso utente
 # 2 se il tag non esiste
-def add_report(hashtag, user_id, report_text):
+def add_report(bot, hashtag, user_id, report_text):
     hashtag = hashtag.lower()
     print("Adding report to "+hashtag)
     res = db.hashtags.find_one({"hashtag": hashtag})
@@ -132,6 +135,10 @@ def add_report(hashtag, user_id, report_text):
 
     #aggiungi il report all'array
     reports.append({"user_id":user_id,"text":report_text})
+
+    #aggiorna il json locale da passare al canale admin se necessario
+    res["resports"] = reports
+
     #aggiorna il database
     db.hashtags.update_one( {"_id": res["_id"]}, 
         {"$set": 
@@ -142,7 +149,8 @@ def add_report(hashtag, user_id, report_text):
 
     print("created report")
 
-    #TODO: aggiungere invio in canale quando i report superano un certo numero
+    if len(reports) >= MAX_REPORTS:
+        adminChannel.send_report_data(bot, res)
 
     return 0
 

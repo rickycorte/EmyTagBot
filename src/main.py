@@ -32,6 +32,7 @@ import dbManager
 import string
 import datetime
 import firebase
+import adminChannel
 
 
 TOKEN = os.environ.get('TOKEN', 'token')
@@ -329,7 +330,7 @@ def report(bot, update):
         update.message.reply_text(texts.report_short)
         return
 
-    res = dbManager.add_report(tag,update.message.from_user.id, parts[2])
+    res = dbManager.add_report(bot, tag,update.message.from_user.id, parts[2])
 
     if res == 0:
         update.message.reply_text(texts.report_send_success)
@@ -437,29 +438,7 @@ def admin_info(bot, update):
         update.message.reply_text(texts.not_found)
         return
 
-    reply = tag+":\n"
-    if res["reserved"] == True:
-        reply += "~ Reserved by the system ~\n"
-
-    reply += "Owner: " + res["owner"]["first_name"] + " " + res["owner"]["last_name"] + " @"+res["owner"]["username"] + "\n"
-    reply += "Country: " + res["owner"]["region"] + "\n"
-    reply += res["origin_chat"]["type"] + " chat: " + res["origin_chat"]["name"] + "\n"
-    
-    reply += "Type: " + res["data"]["type"] + "\n"
-    reply += "Used: " + str(res["use_count"]) + " times\n"
-         
-    if res["reserved"] == True: 
-        reply += "Expire: Never\n"   
-    else:
-        reply += "Expire: " + dbManager.calculate_delta_now(res["last_use_date"])+"\n"
-        reply += "Creation: " + res["creation_date"].strftime("%d/%m/%y")+"\n"
-
-    reply += "Reports: "
-    for report in res["reports"]:
-        reply +="\n - " + report["text"]
-
-
-    update.message.reply_text(reply)
+    update.message.reply_text( adminChannel.format_tag_info_admin(res) )
 
 # Message Handlers #
 ################################################################################################################################
