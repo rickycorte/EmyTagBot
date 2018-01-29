@@ -1,6 +1,6 @@
 welcome_message = "Hiii :3!\n Type /help to understand how I work, have fun!"
 
-claim_reply = 'Use: Quote a message and then type /claim #your_awesone_tag\n'
+claim_reply = 'Use: Quote a message and then type /claim #your_awesome_tag\n'
 claim_reply += 'Remember that the data you set will be available EVERYWHERE untill you delete it or is removed after it expires'
 
 claim_error = "Sorry, someone else owns that tag"

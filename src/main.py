@@ -254,15 +254,17 @@ def info(bot, update):
     reply = tag+":\n"
     if res["reserved"] == True:
         reply += "~ Reserved by the system ~\n"
-        reply += "Type: " + res["type"] + "\n"
-        reply += "Used: " + str(res["use_count"]) + " times\n"
-        reply += "Expire: Never"     
+    
+    reply += "Type: " + res["data"]["type"] + "\n"
+    reply += "Used: " + str(res["use_count"]) + " times\n"
+         
+    if res["reserved"] == True: 
+        reply += "Expire: Never"   
     else:
-        reply += "Type: " + res["type"] + "\n"
-        reply += "Used: " + str(res["use_count"]) + " times\n"
         reply += "Creation: " + res["creation_date"].strftime("%d/%m/%y")+"\n"
-
         reply += "Expire: " + dbManager.calculate_delta_now(res["last_use_date"])
+
+
 
     update.message.reply_text(reply)
 
@@ -419,6 +421,46 @@ def admin_reserve(bot, update):
     update.message.reply_text("[A] Tag reserved")
 
 
+def admin_info(bot, update):
+
+    if is_from_admin(update) == False:
+        return
+
+    tag = validate_cmd(update.message.text)
+    if tag is None:
+        update.message.reply_text("Use /info <tag>")
+        return
+    
+    res = dbManager.get_hashtag_info(tag)
+
+    if res is None:
+        update.message.reply_text(texts.not_found)
+        return
+
+    reply = tag+":\n"
+    if res["reserved"] == True:
+        reply += "~ Reserved by the system ~\n"
+
+    reply += "Owner: " + res["owner"]["first_name"] + " " + res["owner"]["last_name"] + " @"+res["owner"]["username"] + "\n"
+    reply += "Country: " + res["owner"]["region"] + "\n"
+    reply += res["origin_chat"]["type"] + " chat: " + res["origin_chat"]["name"] + "\n"
+    
+    reply += "Type: " + res["data"]["type"] + "\n"
+    reply += "Used: " + str(res["use_count"]) + " times\n"
+         
+    if res["reserved"] == True: 
+        reply += "Expire: Never\n"   
+    else:
+        reply += "Expire: " + dbManager.calculate_delta_now(res["last_use_date"])+"\n"
+        reply += "Creation: " + res["creation_date"].strftime("%d/%m/%y")+"\n"
+
+    reply += "Reports: "
+    for report in res["reports"]:
+        reply +="\n - " + report["text"]
+
+
+    update.message.reply_text(reply)
+
 # Message Handlers #
 ################################################################################################################################
 
@@ -489,6 +531,7 @@ def main():
     dispatcher.add_handler(CommandHandler("aset", admin_set))
     dispatcher.add_handler(CommandHandler("arm", admin_remove))
     dispatcher.add_handler(CommandHandler("ars", admin_reserve))
+    dispatcher.add_handler(CommandHandler("ainfo", admin_info))
 
     #hashtag chat
     dispatcher.add_handler(MessageHandler(Filters.entity("hashtag"), hashtag_message))

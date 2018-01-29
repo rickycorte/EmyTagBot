@@ -239,14 +239,7 @@ def get_hashtag_info(hashtag):
     if res is None:
         return None
     else:
-        return { 
-            "hashtag": res["hashtag"],
-            "type": res["data"]["type"],
-            "reserved": res["reserved"],
-            "creation_date": res["creation_date"],
-            "last_use_date": res["last_use_date"],
-            "use_count": res["use_count"] 
-        }
+        return res
 
 
 #cambia un hashtag in un altro
