@@ -25,6 +25,7 @@
 ###################################################################################
 
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 import datetime
 import os
 import adminChannel
@@ -312,8 +313,14 @@ def get_user_hashtags(user_id):
             )
     return hashs
 
+
 #restituisce il json 
 def get_firebase_json():
     res = db.firebase.find_one()
     del res["_id"]
     return res
+
+
+#cerca un tag in base all'id di mongodb passato
+def get_tag_by_id(tag_id):
+    return db.hashtags.find_one({"_id": ObjectId(tag_id)})

@@ -26,7 +26,7 @@
 
 import os
 import logging
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
 import texts
 import dbManager
 import string
@@ -478,6 +478,9 @@ def hashtag_message(bot, update):
         bot.sendVideo(update.message.chat.id,result["reply"])
 
 
+def get_chat_id(bot,update):
+    update.message.reply_text("Chat ID: "+str(update.message.chat.id))
+
 ################################################################################################################################
 
 
@@ -512,18 +515,23 @@ def main():
     dispatcher.add_handler(CommandHandler("ars", admin_reserve))
     dispatcher.add_handler(CommandHandler("ainfo", admin_info))
 
+    #handler query admin
+    dispatcher.add_handler(CallbackQueryHandler(adminChannel.query_handler))
+
     #hashtag chat
     dispatcher.add_handler(MessageHandler(Filters.entity("hashtag"), hashtag_message))
+
 
     # start bot
 
     DEBUG = os.environ.get('DEBUG', "false")
 
     if DEBUG != "false":
-        updater.start_polling()
+        dispatcher.add_handler(CommandHandler("id", get_chat_id))
+        updater.start_polling(allowed_updates=["message", "callback_query"])
         print("DEBUG MODE ON")
     else:
-        updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN)
+        updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN, allowed_updates=["message", "callback_query"])
         updater.bot.set_webhook(HEROKU_APP + TOKEN)
         print("PRODUCTION MODE")
 

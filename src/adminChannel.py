@@ -57,18 +57,81 @@ def format_tag_info_admin(tag_dict):
 
     return reply
 
+
+#restituisce un id per identificare l'azione associata a un preciso tag di un utente
+# restituisce una strianga di massimo 64 caratteri formattata come <azione>_<user_id>_<tag id>
+# l'id del tag puo essere tranciato se finiscono i 64 caratteri
+def make_button_data(action, user_id, tag_id):
+    id = str(action) + "_"+str(user_id) + "_"+ str(tag_id)
+    return id[:64]
+
+
 #manda un messaggio inerente al report nella canale admin
 #aggiunge poi i bottoni con funzionalita da decidere :3
 def send_report_data(bot, tag_dict):
-    print("Sending report data to admin channel")
+    print("Sending report data to admin channel (" + str(CHANNEL_ID) + ")")
     msg = format_tag_info_admin(tag_dict)
+
+    user_id = tag_dict["owner"]["id"]
+    tag_id = tag_dict["_id"]
+
+    if isinstance(tag_id, dict) and tag["$oid"] is not None:
+        tag_id = tag_id["$oid"]
+
     keyboard = [
-                    [InlineKeyboardButton("Clear reports", callback_data='1'), InlineKeyboardButton("Remove tag", callback_data='2')],
-                    [InlineKeyboardButton("Warn user", callback_data='3'), InlineKeyboardButton("Ban User", callback_data='4')],
-                    [InlineKeyboardButton("Show Tag Data", callback_data='5')] 
+                    [InlineKeyboardButton("Clear reports", callback_data = make_button_data("cr",user_id,tag_id) ),
+                     InlineKeyboardButton("Remove tag", callback_data = make_button_data("rt",user_id,tag_id) )],
+
+                    [InlineKeyboardButton("Warn user", callback_data = make_button_data("wu",user_id,tag_id) ),
+                     InlineKeyboardButton("Ban User", callback_data = make_button_data("bu",user_id,tag_id) )],
+
+                    [InlineKeyboardButton("Show Tag Data (Private Chat)", callback_data = make_button_data("st",user_id,tag_id) )] 
                 ]
 
     reply_buttons = InlineKeyboardMarkup(keyboard)
 
     bot.sendMessage(chat_id=CHANNEL_ID, text=msg, reply_markup=reply_buttons)
     
+
+#handler generico delle query da usare come callback 
+def query_handler(bot, update):
+    query = update.callback_query
+
+    parts = query.data.split("_")
+
+    if parts[0] == "st":
+        send_tag_data_to_private_chat(bot,update,parts[1],parts[2])
+
+    #bot.sendMessage(chat_id=CHANNEL_ID,text = "Selected: "+query.data)
+    query.answer()
+
+#invia in chat provivata il contenuto di un tag
+def send_tag_data_to_private_chat(bot, update, user_id, tag_id):
+
+    result = dbManager.search_tag_by_id(user_id,tag_id)
+    if result is None:
+       bot.sendMessage(chat_id=update.callback_query.from_user.id, text = "Error: can't find tag")
+       return
+
+    uid = update.callback_query.from_user.id
+
+    if result["data"]["type"] == "text":
+        bot.sendMessage(uid, result["data"]["data"])
+
+    if result["data"]["type"] == "image":
+        bot.sendPhoto(uid, result["data"]["data"])
+
+    if result["data"]["type"] == "gif":
+        bot.sendDocument(uid, result["data"]["data"])
+
+    if result["data"]["type"] == "sticker":
+        bot.sendSticker(uid, result["data"]["data"])
+
+    if result["data"]["type"] == "audio":
+        bot.sendAudio(uid, result["data"]["data"])
+
+    if result["data"]["type"] == "voice":
+        bot.sendVoice(uid, result["data"]["data"])
+
+    if result["data"]["type"] == "video":
+        bot.sendVideo(uid, result["data"]["data"])
