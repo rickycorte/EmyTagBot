@@ -27,6 +27,9 @@
 import os
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 import dbManager
+import datetime
+
+ADMIN_ID = os.environ.get('ADMIN', 0)
 
 CHANNEL_ID = int( os.environ.get('ADMIN_CHANNEL', 0) )
 
@@ -82,11 +85,9 @@ def send_report_data(bot, tag_dict):
                     [InlineKeyboardButton("Clear reports", callback_data = make_button_data("cr",user_id,tag_id) ),
                      InlineKeyboardButton("Remove tag", callback_data = make_button_data("rt",user_id,tag_id) )],
 
-                    [InlineKeyboardButton("Warn user", callback_data = make_button_data("wu",user_id,tag_id) ),
-                     InlineKeyboardButton("Ban User", callback_data = make_button_data("bu",user_id,tag_id) )],
-
                     [InlineKeyboardButton("Show Tag Data (Private Chat)", callback_data = make_button_data("st",user_id,tag_id) )] 
                 ]
+    
 
     reply_buttons = InlineKeyboardMarkup(keyboard)
 
@@ -97,18 +98,30 @@ def send_report_data(bot, tag_dict):
 def query_handler(bot, update):
     query = update.callback_query
 
+    if int(query.from_user.id) != int(ADMIN_ID): #check if admin
+        return
+
     parts = query.data.split("_")
 
     if parts[0] == "st":
-        send_tag_data_to_private_chat(bot,update,parts[1],parts[2])
+        send_tag_data_to_private_chat(bot,update,parts[2])
+
+    if parts[0] == "cr":
+        clear_reports(bot,update, parts[2])
+
+    if parts[0] == "rt":
+        remove_tag(bot,update, parts[2])
+
+    if parts[0] == "nb":
+        close_case(bot, update, None, "deleted tag")
 
     #bot.sendMessage(chat_id=CHANNEL_ID,text = "Selected: "+query.data)
-    query.answer()
+
 
 #invia in chat provivata il contenuto di un tag
-def send_tag_data_to_private_chat(bot, update, user_id, tag_id):
+def send_tag_data_to_private_chat(bot, update, tag_id):
 
-    result = dbManager.search_tag_by_id(user_id,tag_id)
+    result = dbManager.get_tag_by_id(tag_id)
     if result is None:
        bot.sendMessage(chat_id=update.callback_query.from_user.id, text = "Error: can't find tag")
        return
@@ -135,3 +148,56 @@ def send_tag_data_to_private_chat(bot, update, user_id, tag_id):
 
     if result["data"]["type"] == "video":
         bot.sendVideo(uid, result["data"]["data"])
+
+
+#genera il messaggio che infroma gli admin che sono stati presi provvedimenti sul tag
+def close_case(bot, update, db_data, message):
+    qr = update.callback_query
+
+    reply = ""
+
+    if db_data is not None:
+        reply = "Tag "+ db_data["hashtag"]+":\n"
+    else:
+        reply = "Deleted tag\n"
+
+    reply += "Action: "+ message +"\n"
+    reply += "Author: " + qr.from_user.first_name +" ("+qr.from_user.username+")\n"
+    reply += "Date: "+ datetime.datetime.utcnow().strftime("%d/%m/%y")+"\n"
+    reply += "~~~ CASE CLOSED ~~~"
+
+    bot.edit_message_text(text = reply, chat_id=qr.message.chat_id, message_id=qr.message.message_id)
+
+
+#elimina tutti i report di un tag e modifica il messaggio per avvisare del completamento dell'operazione
+def clear_reports(bot, update, tag_id):
+    res = dbManager.remove_reports(tag_id)
+    close_case(bot,update,res,"reports cleared")
+
+
+
+#elimina un tag e chiedi cosa fare con l'utente: nulla/warn/ban
+def remove_tag(bot, update, tag_id):
+
+    res = dbManager.get_tag_by_id(tag_id)
+
+    dbManager.delete_tag_by_id(tag_id)
+
+    user_id = res["owner"]["id"] 
+    
+    qr = update.callback_query
+
+    keyboard = [
+                    [
+                        InlineKeyboardButton("Warn user", callback_data = make_button_data("wu",user_id,tag_id) ),
+                        InlineKeyboardButton("Ban User", callback_data = make_button_data("bu",user_id,tag_id) )
+                    ],
+                    [
+                        InlineKeyboardButton("Close case", callback_data = make_button_data("nb",user_id,tag_id) ),
+                    ]
+
+
+                ]
+    
+    bot.edit_message_text(text = "Tag removed\nWhat should I do now?", chat_id=qr.message.chat_id, message_id=qr.message.message_id, 
+        reply_markup=InlineKeyboardMarkup(keyboard) )

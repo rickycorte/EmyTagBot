@@ -324,3 +324,27 @@ def get_firebase_json():
 #cerca un tag in base all'id di mongodb passato
 def get_tag_by_id(tag_id):
     return db.hashtags.find_one({"_id": ObjectId(tag_id)})
+
+
+#cancella tutti i report del tag passato per id
+#restituisce il nuovo documento
+def remove_reports(tag_id):
+    res = get_tag_by_id(tag_id)
+
+    #aggiorna il json locale da passare al canale admin se necessario
+    res["resports"] = []
+
+    #aggiorna il database
+    db.hashtags.update_one( {"_id": res["_id"]}, 
+        {"$set": 
+            {
+                "reports": []
+            } 
+        }, upsert=False)
+
+    print("cleared reports")
+    return res
+
+#cancella un tag per id
+def delete_tag_by_id(tag_id):
+    db.hashtags.delete_one({"_id":ObjectId(tag_id)})
