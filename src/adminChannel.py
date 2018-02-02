@@ -28,6 +28,7 @@ import os
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 import dbManager
 import datetime
+import texts
 
 ADMIN_ID = os.environ.get('ADMIN', 0)
 
@@ -114,6 +115,21 @@ def query_handler(bot, update):
 
     if parts[0] == "nb":
         close_case(bot, update, None, "deleted tag")
+    
+    if parts[0] == "wu":
+        r = dbManager.warn_user(int(parts[1]))
+
+        if r == 1:
+            send_private_message(bot, int(parts[1]), texts.warn_received)
+            close_case(bot, update, None, "deleted tag and warned user")
+        else:
+            send_private_message(bot, int(parts[1]), texts.ban_received)
+            close_case(bot, update, None, "deleted tag and banned user")
+
+
+    if parts[0] == "bu":
+        dbManager.ban_user(int(parts[1]))
+        close_case(bot, update, None, "deleted tag and banned user")
 
     #bot.sendMessage(chat_id=CHANNEL_ID,text = "Selected: "+query.data)
 
@@ -181,6 +197,8 @@ def remove_tag(bot, update, tag_id):
 
     res = dbManager.get_tag_by_id(tag_id)
 
+    send_private_message(bot, res["origin_chat"]["id"] , "Hey, I just deleted "+res["hashtag"]+" because it was inopportune!")
+
     dbManager.delete_tag_by_id(tag_id)
 
     user_id = res["owner"]["id"] 
@@ -201,3 +219,8 @@ def remove_tag(bot, update, tag_id):
     
     bot.edit_message_text(text = "Tag removed\nWhat should I do now?", chat_id=qr.message.chat_id, message_id=qr.message.message_id, 
         reply_markup=InlineKeyboardMarkup(keyboard) )
+
+
+#invia un messaggipo privata a un utente
+def send_private_message(bot, user_id, text):
+    bot.sendMessage(chat_id = user_id, text = text)

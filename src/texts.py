@@ -1,4 +1,4 @@
-welcome_message = "Hiii :3!\n Type /help to understand how I work, have fun!"
+welcome_message = "Hiii :3!\n Type /help to understand how I work, have fun! Almost forgot to say that you need to keep a private chat with me if you want to recive important notifications!"
 
 claim_reply = 'Use: Quote a message and then type /claim #your_awesome_tag\n'
 claim_reply += 'Remember that the data you set will be available EVERYWHERE untill you delete it or is removed after it expires'
@@ -46,3 +46,8 @@ edit_perm_error = "Sorry but one of the tags is not yours"
 mytags_message= "Your tag list is ready at: https://emytagbot.ml/user.html?"
 
 report_short = "Report message must be long at least 6 characters"
+
+
+warn_received = "Your account has been warned. Some more warning and you will get banned!"
+
+ban_received = "Due to your bad behaviour I decided to ban your account. You won't be able to claim, edit and report tags anymore. Goodbay, it has been fun!"

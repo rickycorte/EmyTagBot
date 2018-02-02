@@ -42,6 +42,7 @@ reserved_tag_placeholder_name = os.environ.get('RESERVED_TAG_PLACEHOLDER', 'EmyT
 
 MAX_REPORTS = int( os.environ.get('MAX_REPORTS', 1))
 
+WARNS_BEFORE_BAN = int( os.environ.get('WARNS_BEFORE_BAN', 3))
 
 #controlla se user_id puo claimare un determinato hashtag
 # 0 = si
@@ -345,6 +346,62 @@ def remove_reports(tag_id):
     print("cleared reports")
     return res
 
+
 #cancella un tag per id
 def delete_tag_by_id(tag_id):
+    print("Deleted tag by id")
     db.hashtags.delete_one({"_id":ObjectId(tag_id)})
+
+
+#warna un utente, se l'utente supera il limite di warning viene bannato in automatico
+# restituisce 1 se warnato
+# restituisce 2 se bannatp
+def warn_user(user_id):
+
+    res = db.users.find_one({"id": user_id})
+
+    warns = 0
+
+    if res is not None:
+        warns = res["warnings"]
+    
+    warns += 1
+
+
+    if warns < WARNS_BEFORE_BAN:
+        db.users.update_one( {"id": user_id}, 
+            {"$set": 
+                {
+                    "warnings": warns,
+                    "banned": False
+                } 
+            },  upsert=True)
+
+        print("warned user "+str(user_id)+" ("+str(warns)+" warns)")
+        return 1
+
+    else:
+        ban_user(user_id)
+        return 2
+
+
+#banna l'utente in modo permanente
+def ban_user(user_id):
+    db.users.update_one( {"id": user_id}, 
+        {"$set": 
+            {
+                "warnings": WARNS_BEFORE_BAN,
+                "banned": True
+            } 
+        }, upsert=True)
+    print("banned user "+str(user_id))
+
+
+#restituisce true se l'utente e' stato bannato
+def is_user_banned(user_id):
+
+    res = db.users.find_one({"id": user_id})
+    if res is None or res["banned"] == False:
+        return False
+
+    return True

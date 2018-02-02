@@ -194,6 +194,10 @@ def start(bot, update):
 
 #comando claim
 def claim(bot, update):
+
+    if dbManager.is_user_banned(update.message.from_user.id) == True:
+        return
+
     tag = validate_cmd(update.message.text)
 
     if tag is None:
@@ -241,6 +245,7 @@ def remove(bot, update):
 
 #comando info
 def info(bot, update):
+
     tag = validate_cmd(update.message.text)
     if tag is None:
         update.message.reply_text("Use /info <tag>")
@@ -283,6 +288,10 @@ def top(bot, update):
 
 #comando edit
 def edit(bot, update):
+
+    if dbManager.is_user_banned(update.message.from_user.id) == True:
+        return
+
     parts = update.message.text.split()
 
     if len(parts) != 3:
@@ -314,6 +323,10 @@ def edit(bot, update):
 
 #comando report
 def report(bot, update):
+
+    if dbManager.is_user_banned(update.message.from_user.id) == True:
+        return
+
     parts = update.message.text.split(" ",2)
 
     if len(parts) != 3:
@@ -351,6 +364,7 @@ def report(bot, update):
 
 #comando mytags
 def mytags(bot,update):
+
     uid = update.message.from_user.id
     name = update.message.from_user.first_name
     username = update.message.from_user.username
