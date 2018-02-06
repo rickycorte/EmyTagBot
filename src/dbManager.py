@@ -405,3 +405,17 @@ def is_user_banned(user_id):
         return False
 
     return True
+
+
+#aggiunge la chat alla lista di chat utilizzabili per il broadcast di un messaggio
+def add_chat_to_bcast_list(chat_id):
+    db.bcast_chats.update_one( {"id": chat_id}, 
+            {"$set": 
+                {
+                    "last_use": datetime.datetime.utcnow(),
+                } 
+            },  upsert=True)
+
+#restituisce la lista intera di chat
+def get_bcast_chats():
+    return db.bcast_chats.find()
