@@ -34,11 +34,13 @@ def broadcast_message(bot, update, msg):
     t = threading.Thread(target = exec_broadcast_message, args = (bot, update, msg))
     t.start()
 
-    print("Broadcasting")
+    print("Started broadcasting")
 
 
 #funzione che esegue il broadcast, da avviare in unb thread separato
 def exec_broadcast_message(bot, update, msg):
+
+    print("Broadcasting: "+msg)
 
     bot.sendMessage(update.message.chat.id, "Broadcasting: `"+msg+"`")
 
@@ -48,3 +50,4 @@ def exec_broadcast_message(bot, update, msg):
         time.sleep(1)
     
     bot.sendMessage(update.message.chat.id, "Broadcast completed :3")
+    print("Broadcast completed")
