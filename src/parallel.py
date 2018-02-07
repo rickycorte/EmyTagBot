@@ -24,44 +24,27 @@
 #
 ###################################################################################
 
-from pymongo import MongoClient
-import datetime
-import os
+import dbManager
+import time
+import threading
+
+#esegue il broadcast in piu fasi (evita il limite di rate delle api telegram)
+#al termine manda un msg alla chat che ha eseguito il comando
+def broadcast_message(bot, update, msg):
+    t = threading.Thread(target = exec_broadcast_message, args = (bot, update, msg))
+    t.start()
+
+    print("Broadcasting")
 
 
-print("~~~ Removing tags ~~~")
+#funzione che esegue il broadcast, da avviare in unb thread separato
+def exec_broadcast_message(bot, update, msg):
 
-default_hashtag_lifetime = int( os.environ.get('TAG_LIFE_TIME', 5))
+    bot.sendMessage(update.message.chat.id, "Broadcasting: `"+msg+"`")
 
-client = MongoClient( os.environ.get('MONGODB_URI', 'error') )
-
-db = client[ os.environ.get('DB_NAME', 'EmyTagBot') ] 
-
-
-remove_date_sep =  datetime.datetime.utcnow() - datetime.timedelta(days=default_hashtag_lifetime)
-
-hashs = db.hashtags.find({"reserved":False})
-for tag in hashs:
-    if tag["last_use_date"] < remove_date_sep:
-        print ("Deleted "+tag["hashtag"])
-        db.hashtags.delete_one({"_id":tag["_id"]})
-
-print("~~~ Removing tags: DONE ~~~")
-
-
-####################################################################################################
-# remove old broadcast chats
-
-print("~~~ Removing old broadcast chats ~~~")
-
-chat_time = int( os.environ.get('BCAST_CHAT_LIFE', 30))
-
-remove_date_ch =  datetime.datetime.utcnow() - datetime.timedelta(days=chat_time)
-
-db.bcast_chats.remove(
-    {
-        "last_use" : { "$lt" : remove_date_ch }
-    }
-)
-
-print("~~~ Removed bcast chats: DONE ~~~")
+    chats = dbManager.get_bcast_chats()
+    for chat in chats:
+        bot.sendMessage(chat["id"], msg)
+        time.sleep(1)
+    
+    bot.sendMessage(update.message.chat.id, "Broadcast completed :3")

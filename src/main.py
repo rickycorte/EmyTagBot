@@ -33,6 +33,7 @@ import string
 import datetime
 import firebase
 import adminChannel
+import parallel
 
 
 TOKEN = os.environ.get('TOKEN', 'token')
@@ -189,6 +190,7 @@ def get_message_data(message):
 #il comando start, sarebbe meglio mettere una frase piu decente ma vbb <3
 def start(bot, update):
     update.message.reply_text(texts.welcome_message)
+    dbManager.add_chat_to_bcast_list(update.message.chat.id)
 
 
 
@@ -373,7 +375,7 @@ def mytags(bot,update):
 
     print("Preparing mytags data for "+ name+" @"+username)
 
-    firebase.send_data(uid,name,username,dbManager.get_user_hashtags(uid))
+    firebase.send_user_data(uid,name,username,dbManager.get_user_hashtags(uid))
 
     print(name+" page is ready")
     update.message.reply_text(texts.mytags_message+str(update.message.from_user.id))
@@ -454,6 +456,22 @@ def admin_info(bot, update):
 
     update.message.reply_text( adminChannel.format_tag_info_admin(res) )
 
+def admin_bcast(bot, update):
+    if is_from_admin(update) == False:
+        return
+
+    parts = update.message.text.split(" ",1)
+
+    if len(parts) != 2:
+        update.message.reply_text("Use /bcast <message>")
+        return
+
+    parallel.broadcast_message(bot, update, parts[1])
+
+    #ci mettera un po a finire :3
+    #ma qui ci arriviamo subito
+    
+
 # Message Handlers #
 ################################################################################################################################
 
@@ -463,6 +481,8 @@ def hashtag_message(bot, update):
 
     if tag is None: 
         return
+
+    dbManager.add_chat_to_bcast_list(update.message.chat.id)
 
     result = dbManager.search_hashtag(tag)
 
@@ -528,6 +548,8 @@ def main():
     dispatcher.add_handler(CommandHandler("arm", admin_remove))
     dispatcher.add_handler(CommandHandler("ars", admin_reserve))
     dispatcher.add_handler(CommandHandler("ainfo", admin_info))
+
+    dispatcher.add_handler(CommandHandler("bcast", admin_bcast))
 
     #handler query admin
     dispatcher.add_handler(CallbackQueryHandler(adminChannel.query_handler))
