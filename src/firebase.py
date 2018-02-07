@@ -44,3 +44,10 @@ def send_user_data(user_id, name, username, tags):
         u'username': username,
         u'tags': tags
     })
+
+#invia la lista dei tag piu usati a firebase
+def send_top_tags(tags):
+    doc_ref = db.collection(u'more').document(u'top')
+    doc_ref.set({
+        u'tags': tags
+    })

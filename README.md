@@ -93,8 +93,15 @@ I know, you did not understand a bit of what I said. Just play a bit with Emy an
 
 `WARNS_BEFORE_BAN`: max number of warnings before account ban
 
+`WEB_TOP_TAG_LIST_SIZE`:  number of elements to show in top page
+
 ## Setup Firebase
 Add your firebase admin json as a document called `firebase` in your database
+
+## Web Integration
+This bot is deeply integrated with a custom website powered by firebase.
+
+You can check its repo [here](https://github.com/rickycorte/EmyTagBot-Site).
 
 **Note:**
 your firebase admin json is something like this:
@@ -122,5 +129,8 @@ To execute your bot on your local machine run:
 
 `python src/main.py`
 
-To use auto cleanup script create a daily job and run 
-`python autoremove.py`
+Create also two daily jobs
+
+`python autoremove.py` to remove old tags and old chats
+
+`python top_page.py` to update the top tags page
