@@ -236,12 +236,16 @@ def remove(bot, update):
         return
     
     #controlla se e' possibile rimuovere il tag
-    if dbManager.can_write_hashtag(tag, update.message.from_user.id) == 0:
+    res = dbManager.can_write_hashtag(tag, update.message.from_user.id, True)
+    if res == 0:
         #rimuovi il tag
         dbManager.delete_hashtag(tag)
         update.message.reply_text(texts.tag_remove_ok)
     else:
-        update.message.reply_text(texts.tag_not_owned)
+        if res == 3:
+            update.message.reply_text(texts.rm_tag_free)
+        else:
+            update.message.reply_text(texts.tag_not_owned)
 
 
 

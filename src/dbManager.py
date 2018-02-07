@@ -48,14 +48,20 @@ WARNS_BEFORE_BAN = int( os.environ.get('WARNS_BEFORE_BAN', 3))
 # 0 = si
 # 1 = no perche e' di un altro utente
 # 2 = e' riservato
-def can_write_hashtag(hashtag, user_id):
+# resitiuisce 3 se inesistente ed e' stato passato il valore true come terzo parametro
+def can_write_hashtag(hashtag, user_id, divide_cases = False):
     print("checking hashtag write permission for "+ hashtag)
     hashtag = hashtag.lower()
     res = db.hashtags.find_one({"hashtag": hashtag})
 
+
+    if divide_cases == True and res is None:
+        return 3
+
     #hashtag inesistente quindi si puo scrivere
     if res is None: 
         return 0
+            
     
     #tag riservato dal sistema
     if res["reserved"] == True:

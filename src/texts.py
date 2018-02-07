@@ -51,3 +51,5 @@ report_short = "Report message must be long at least 6 characters"
 warn_received = "Your account has been warned. Some more warning and you will get banned!"
 
 ban_received = "Due to your bad behaviour I decided to ban your account. You won't be able to claim, edit and report tags anymore. Goodbay, it has been fun!"
+
+rm_tag_free = "Hey! I can't delete a nullptr or I'll break things 3:"
