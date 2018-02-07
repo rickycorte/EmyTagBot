@@ -63,6 +63,11 @@ I know, you did not understand a bit of what I said. Just play a bit with Emy an
 * Cron jobs (or equivalent). 
 * PipEnv
 
+## Dependencies
+* python-telegram-bot
+* pymongo
+* firebase-admin 
+
 ## Environment variables
 
 [REQUIRED] `TOKEN`: telegram bot token
@@ -98,11 +103,6 @@ I know, you did not understand a bit of what I said. Just play a bit with Emy an
 ## Setup Firebase
 Add your firebase admin json as a document called `firebase` in your database
 
-## Web Integration
-This bot is deeply integrated with a custom website powered by firebase.
-
-You can check its repo [here](https://github.com/rickycorte/EmyTagBot-Site).
-
 **Note:**
 your firebase admin json is something like this:
 ```
@@ -119,6 +119,12 @@ your firebase admin json is something like this:
     "client_x509_cert_url": ""
 }
 ```
+
+## Web Integration
+This bot is deeply integrated with a custom website powered by firebase.
+
+You can check its repo [here](https://github.com/rickycorte/EmyTagBot-Site).
+
 
 ## Run the bot
 To execute your bot on your local machine run:
