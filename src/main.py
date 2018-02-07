@@ -141,6 +141,8 @@ def get_hashtag_top_list_message():
         c+=1
         text = text + str(c) +". "+ itm["hashtag"]+" - " + str(itm["uses"])+"\n"
 
+    text+="See complete list at: https://emytagbot.ml/top.html"
+
     return text
 
 #convalida comandi tipo /comando #tag
