@@ -37,7 +37,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 #invia a firebase i dati passati dell'utente come parametro
-def send_user_data(tag, name, username, tags):
+def send_user_data(user_id, name, username, tags):
     doc_ref = db.collection(u'users').document(str(user_id))
     doc_ref.set({
         u'name': name,
