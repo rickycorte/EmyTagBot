@@ -27,6 +27,7 @@
 import os
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
+from telegram.ext.dispatcher import run_async
 import texts
 import dbManager
 import string
@@ -190,6 +191,7 @@ def get_message_data(message):
 
 
 #il comando start, sarebbe meglio mettere una frase piu decente ma vbb <3
+@run_async
 def start(bot, update):
     update.message.reply_text(texts.welcome_message)
     dbManager.add_chat_to_bcast_list(update.message.chat.id)
@@ -197,6 +199,7 @@ def start(bot, update):
 
 
 #comando claim
+@run_async
 def claim(bot, update):
 
     if dbManager.is_user_banned(update.message.from_user.id) == True:
@@ -230,6 +233,7 @@ def claim(bot, update):
 
 
 #comando remove
+@run_async
 def remove(bot, update):
     
     tag = validate_cmd(update.message.text)
@@ -252,6 +256,7 @@ def remove(bot, update):
 
 
 #comando info
+@run_async
 def info(bot, update):
 
     tag = validate_cmd(update.message.text)
@@ -284,17 +289,20 @@ def info(bot, update):
 
 
 #comando help che mostra un messaggio di aiuto
+@run_async
 def helpme(bot, update):
     update.message.reply_text(texts.help_reply)
 
 
 
 #comando top list hashtag
+@run_async
 def top(bot, update):
     update.message.reply_text(get_hashtag_top_list_message())
 
 
 #comando edit
+@run_async
 def edit(bot, update):
 
     if dbManager.is_user_banned(update.message.from_user.id) == True:
@@ -330,6 +338,7 @@ def edit(bot, update):
 
 
 #comando report
+@run_async
 def report(bot, update):
 
     if dbManager.is_user_banned(update.message.from_user.id) == True:
@@ -371,6 +380,7 @@ def report(bot, update):
 
 
 #comando mytags
+@run_async
 def mytags(bot,update):
 
     uid = update.message.from_user.id
@@ -390,7 +400,7 @@ def mytags(bot,update):
 
 
 ### ADMIN ###
-
+@run_async
 def admin_set(bot, update):
     if is_from_admin(update) == False:
         return
@@ -417,7 +427,7 @@ def admin_set(bot, update):
            update.message.reply_text("[A] "+texts.claim_ok + tag)  
 
 
-
+@run_async
 def admin_remove(bot, update):
     if is_from_admin(update) == False:
         return
@@ -431,6 +441,7 @@ def admin_remove(bot, update):
     update.message.reply_text("[A] Tag removed")
 
 
+@run_async
 def admin_reserve(bot, update):
     if is_from_admin(update) == False:
         return
@@ -444,6 +455,7 @@ def admin_reserve(bot, update):
     update.message.reply_text("[A] Tag reserved")
 
 
+@run_async
 def admin_info(bot, update):
 
     if is_from_admin(update) == False:
@@ -462,6 +474,8 @@ def admin_info(bot, update):
 
     update.message.reply_text( adminChannel.format_tag_info_admin(res) )
 
+
+@run_async
 def admin_bcast(bot, update):
     if is_from_admin(update) == False:
         return
@@ -481,7 +495,7 @@ def admin_bcast(bot, update):
 # Message Handlers #
 ################################################################################################################################
 
-
+@run_async
 def hashtag_message(bot, update):
     tag = check_if_hashtag( find_first_hashtag(update.message.text) )
 

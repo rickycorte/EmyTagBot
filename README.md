@@ -17,7 +17,7 @@ I know, you did not understand a bit of what I said. Just play a bit with Emy an
 ### Users:
 * Claim unlimited tags
 * Tags types: text, sticker, image, gif, audio, vocal, video
-* Top tag list 
+* Top tag list (in chat and web)
 * Edit tag names (owned tag only)
 * Remove tegs (owned tag only)
 * Report tags with a custom message (1 report/user for every tag)
