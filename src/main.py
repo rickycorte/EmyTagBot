@@ -26,7 +26,7 @@
 
 import os
 import logging
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, InlineQueryHandler
 from telegram.ext.dispatcher import run_async
 import texts
 import dbManager
@@ -35,6 +35,7 @@ import datetime
 import firebase
 import adminChannel
 import parallel
+import inlines
 
 
 TOKEN = os.environ.get('TOKEN', 'token')
@@ -140,7 +141,7 @@ def get_hashtag_top_list_message():
     c = 0
     for itm in res:
         c+=1
-        text = text + str(c) +". "+ itm["hashtag"]+" - " + str(itm["uses"])+"\n"
+        text = text + str(c) +". "+ itm["hashtag"]+" - " + str(itm["use_count"])+"\n"
 
     text+="See complete list at: https://emytagbot.ml/top.html"
 
@@ -490,7 +491,7 @@ def admin_bcast(bot, update):
 
     #ci mettera un po a finire :3
     #ma qui ci arriviamo subito
-    
+
 
 # Message Handlers #
 ################################################################################################################################
@@ -577,17 +578,21 @@ def main():
     #hashtag chat
     dispatcher.add_handler(MessageHandler(Filters.entity("hashtag"), hashtag_message))
 
+    #inline query
+    dispatcher.add_handler(InlineQueryHandler(inlines.inline_query))
 
     # start bot
 
     DEBUG = os.environ.get('DEBUG', "false")
 
+    up_kind = ["message", "callback_query", "inline_query"]
+
     if DEBUG != "false":
         dispatcher.add_handler(CommandHandler("id", get_chat_id))
-        updater.start_polling(allowed_updates=["message", "callback_query"])
+        updater.start_polling(allowed_updates= up_kind)
         print("DEBUG MODE ON")
     else:
-        updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN, allowed_updates=["message", "callback_query"])
+        updater.start_webhook(listen="0.0.0.0", port=PORT, url_path=TOKEN, allowed_updates=up_kind)
         updater.bot.set_webhook(HEROKU_APP + TOKEN)
         print("PRODUCTION MODE")
 

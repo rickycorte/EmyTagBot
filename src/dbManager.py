@@ -81,10 +81,7 @@ def get_top_list():
     if not res or res is None:
         return None
 
-    for itm in res:
-        result.append({"hashtag":itm["hashtag"], "uses":itm["use_count"]})
-
-    return result
+    return res
 
 
 #cerca un hashtag nel database
@@ -425,3 +422,8 @@ def add_chat_to_bcast_list(chat_id):
 #restituisce la lista intera di chat
 def get_bcast_chats():
     return db.bcast_chats.find()
+
+
+#cerca un tag parziale e resituisci al massimo 5 risultati
+def search_partial_tag(tag):
+    return db.hashtags.find({"hashtag": {"$regex": "\\b"+tag} }).limit(5)

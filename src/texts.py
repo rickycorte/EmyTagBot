@@ -6,8 +6,10 @@ claim_reply += 'Remember that the data you set will be available EVERYWHERE unti
 claim_error = "Sorry, someone else owns that tag"
 
 help_reply = "Use /claim to set an unclaimed hashtag. I'll remember the data for you but be carefull, what you set will be available EVERYWHERE until removed."
-help_reply+= "\nEvery hashtag has a life time, when it expires the tag will be freed and returned to the wild."
-help_reply+= "\nNote: every time the tag is used its life time is reset, so it won't be deleted by the system"
+help_reply+= "\nEvery hashtag has a lifetime, when it expires the tag will be freed and returned to the wild."
+help_reply+= "\nNote: every time the tag is used its lifetime is reset, so it won't be deleted :3\n\n"
+help_reply+= "You can also use inline queries to post tags data, but be aware that INLINE operations DO NOT count as 'tag uses'. "
+help_reply += "This means that tag lifetime and stats ARE NOT modified!"
 
 auth_error = "Sorry, you don't have the rights to run this command"
 
