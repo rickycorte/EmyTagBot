@@ -140,4 +140,4 @@ def inline_query(bot, update):
         query_text="default query"
     print ("replied to inline: "+query_text)
 
-    update.inline_query.answer(results, cache_time=0) #togliere il tempo cache, serve solo per il debug
+    update.inline_query.answer(results) 
