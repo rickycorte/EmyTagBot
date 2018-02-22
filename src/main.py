@@ -132,18 +132,18 @@ def is_from_admin(update):
 
 #crea e restituisce la lista degli hashtag top
 #restituisce la stringa da mandare alla chat
-def get_hashtag_top_list_message():
+def get_hashtag_top_list_message(update):
     res = dbManager.get_top_list()
     if res is None or not res:
-        return texts.top_list_error
+        return texts.get_text("top_list_error", update.message.from_user.language_code)
     
-    text = texts.top_list_header
+    text = texts.get_text("top_list_header", update.message.from_user.language_code)
     c = 0
     for itm in res:
         c+=1
         text = text + str(c) +". "+ itm["hashtag"]+" - " + str(itm["use_count"])+"\n"
 
-    text+="See complete list at: https://emytagbot.ml/top.html"
+    text+= texts.get_text("complete_list",update.message.from_user.language_code)
 
     return text
 
@@ -194,7 +194,7 @@ def get_message_data(message):
 #il comando start, sarebbe meglio mettere una frase piu decente ma vbb <3
 @run_async
 def start(bot, update):
-    update.message.reply_text(texts.welcome_message)
+    update.message.reply_text(texts.get_text("welcome_message",update.message.from_user.language_code))
     dbManager.add_chat_to_bcast_list(update.message.chat.id)
 
 
@@ -209,12 +209,12 @@ def claim(bot, update):
     tag = validate_cmd(update.message.text)
 
     if tag is None:
-        update.message.reply_text(texts.claim_reply)
+        update.message.reply_text(texts.get_text("claim_reply",update.message.from_user.language_code))
         return
 
     #controlla che sia stato quotato un messaggio
     if update.message.reply_to_message is None:
-        update.message.reply_text(texts.quote_missing)
+        update.message.reply_text(texts.get_text("quote_missing",update.message.from_user.language_code))
         return
 
     #cerca di creare il tag se possibile
@@ -223,13 +223,13 @@ def claim(bot, update):
 
         #controlla validita dati
         if data is None:
-            update.message.reply_text(texts.too_much_chars)
+            update.message.reply_text(texts.get_text("too_much_chars",update.message.from_user.language_code))
         else:
            dbManager.create_hashtag(tag, update, data, False)
-           update.message.reply_text(texts.claim_ok + tag)  
+           update.message.reply_text(texts.get_text("claim_ok", update.message.from_user.language_code) + tag)  
 
     else:
-      update.message.reply_text(texts.claim_error) 
+      update.message.reply_text(texts.get_text("claim_error",update.message.from_user.language_code)) 
 
 
 
@@ -239,7 +239,7 @@ def remove(bot, update):
     
     tag = validate_cmd(update.message.text)
     if tag is None:
-        update.message.reply_text("Use /remove <tag>")
+        update.message.reply_text(texts.get_text("cmd_rm_use",update.message.from_user.language_code))
         return
     
     #controlla se e' possibile rimuovere il tag
@@ -247,12 +247,12 @@ def remove(bot, update):
     if res == 0:
         #rimuovi il tag
         dbManager.delete_hashtag(tag)
-        update.message.reply_text(texts.tag_remove_ok)
+        update.message.reply_text(texts.get_text("tag_remove_ok",update.message.from_user.language_code))
     else:
         if res == 3:
-            update.message.reply_text(texts.rm_tag_free)
+            update.message.reply_text(texts.get_text("rm_tag_free",update.message.from_user.language_code))
         else:
-            update.message.reply_text(texts.tag_not_owned)
+            update.message.reply_text(texts.get_text("tag_not_owned",update.message.from_user.language_code))
 
 
 
@@ -262,29 +262,29 @@ def info(bot, update):
 
     tag = validate_cmd(update.message.text)
     if tag is None:
-        update.message.reply_text("Use /info <tag>")
+        update.message.reply_text(texts.get_text("cmd_rm_use",update.message.from_user.language_code))
         return
     
     res = dbManager.get_hashtag_info(tag)
 
     if res is None:
-        update.message.reply_text(texts.not_found)
+        update.message.reply_text(texts.get_text("not_found",update.message.from_user.language_code))
         return
 
-    reply = tag+":\n"
+    #recupera la stringa giusta in base al tipo di tag e formattala di conseguenza
+    reply = ""
     if res["reserved"] == True:
-        reply += "~ Reserved by the system ~\n"
-    
-    reply += "Type: " + res["data"]["type"] + "\n"
-    reply += "Used: " + str(res["use_count"]) + " times\n"
-         
-    if res["reserved"] == True: 
-        reply += "Expire: Never"   
+        reply = texts.get_text("info_msg_system", update.message.from_user.language_code)
     else:
-        reply += "Creation: " + res["creation_date"].strftime("%d/%m/%y")+"\n"
-        reply += "Expire: " + dbManager.calculate_delta_now(res["last_use_date"])
+        reply = texts.get_text("info_msg_user", update.message.from_user.language_code)
 
-
+    reply = reply.format(
+            tag = tag,
+            type = res["data"]["type"],
+            used = str(res["use_count"]),
+            dtc = res["creation_date"].strftime("%d/%m/%y"),
+            dte = dbManager.calculate_delta_now(res["last_use_date"])
+        )
 
     update.message.reply_text(reply)
 
@@ -292,14 +292,14 @@ def info(bot, update):
 #comando help che mostra un messaggio di aiuto
 @run_async
 def helpme(bot, update):
-    update.message.reply_text(texts.help_reply)
+    update.message.reply_text(texts.get_text("help_reply",update.message.from_user.language_code))
 
 
 
 #comando top list hashtag
 @run_async
 def top(bot, update):
-    update.message.reply_text(get_hashtag_top_list_message())
+    update.message.reply_text(get_hashtag_top_list_message(update))
 
 
 #comando edit
@@ -312,7 +312,7 @@ def edit(bot, update):
     parts = update.message.text.split()
 
     if len(parts) != 3:
-        update.message.reply_text("Use /edit <old tag> <new tag>")
+        update.message.reply_text(texts.get_text("cmd_edit_use",update.message.from_user.language_code))
         return
 
     #controlla i due tag
@@ -320,7 +320,7 @@ def edit(bot, update):
     new_tag = check_if_hashtag(parts[2])
 
     if old_tag is None or new_tag is None:
-        update.message.reply_text("Use /edit <old tag> <new tag>")
+        update.message.reply_text(texts.get_text("cmd_edit_use",update.message.from_user.language_code))
         return
 
     uid = update.message.from_user.id
@@ -329,12 +329,12 @@ def edit(bot, update):
         res = dbManager.change_hashtag(old_tag, new_tag)
 
         if res == 0:
-            update.message.reply_text(texts.edit_tag_error)
+            update.message.reply_text(texts.get_text("edit_tag_error",update.message.from_user.language_code))
         else:
-            update.message.reply_text(old_tag + texts.edit_ok + new_tag)
+            update.message.reply_text( texts.get_text("edit_ok",update.message.from_user.language_code).format(old=old_tag,new=new_tag) )
 
     else:
-        update.message.reply_text(texts.edit_perm_error)
+        update.message.reply_text(texts.get_text("edit_perm_error",update.message.from_user.language_code))
         
 
 
@@ -348,35 +348,35 @@ def report(bot, update):
     parts = update.message.text.split(" ",2)
 
     if len(parts) != 3:
-        update.message.reply_text("Use /report <tag> <message>")
+        update.message.reply_text(texts.get_text("cmd_report_use",update.message.from_user.language_code))
         return
     
     tag = check_if_hashtag(parts[1])
     if tag is None:
-        update.message.reply_text("Use /report <tag> <message>")
+        update.message.reply_text(texts.get_text("cmd_report_use",update.message.from_user.language_code))
         return
     
     #controlla lunghezza tag
     if len(parts[2]) < 6:
-        update.message.reply_text(texts.report_short)
+        update.message.reply_text(texts.get_text("report_short",update.message.from_user.language_code))
         return
 
     res = dbManager.add_report(bot, tag,update.message.from_user.id, parts[2])
 
     if res == 0:
-        update.message.reply_text(texts.report_send_success)
+        update.message.reply_text(texts.get_text("report_send_success",update.message.from_user.language_code))
         return
 
     if res == 1:
-        update.message.reply_text(texts.report_send_error)
+        update.message.reply_text(texts.get_text("report_send_error",update.message.from_user.language_code))
         return
 
     if res == 2:
-        update.message.reply_text(texts.report_no_tag_error)
+        update.message.reply_text(texts.get_text("report_no_tag_error",update.message.from_user.language_code))
         return
 
     if res == 3:
-        update.message.reply_text(texts.report_not_allowed)
+        update.message.reply_text(texts.get_text("report_not_allowed",update.message.from_user.language_code))
         return
 
 
@@ -395,7 +395,7 @@ def mytags(bot,update):
     firebase.send_user_data(uid,name,username,dbManager.get_user_hashtags(uid))
 
     print(name+" page is ready")
-    update.message.reply_text(texts.mytags_message+str(update.message.from_user.id))
+    update.message.reply_text(texts.get_text("mytags_message",update.message.from_user.language_code) +str(update.message.from_user.id))
 
 
 
@@ -409,12 +409,12 @@ def admin_set(bot, update):
     tag = validate_cmd(update.message.text)
 
     if tag is None:
-        update.message.reply_text("Use /aset <tag> ")
+        update.message.reply_text(texts.get_text("adm_set_use"))
         return
 
     #controlla che sia stato quotato un messaggio
     if update.message.reply_to_message is None:
-        update.message.reply_text(texts.quote_missing)
+        update.message.reply_text(texts.get_text("quote_missing"))
         return
 
     #crea il tag
@@ -422,10 +422,10 @@ def admin_set(bot, update):
 
     #controlla validita dati
     if data is None:
-            update.message.reply_text(texts.too_much_chars)
+            update.message.reply_text(texts.get_text("too_much_chars"))
     else:
            dbManager.create_hashtag(tag, None, data, True)
-           update.message.reply_text("[A] "+texts.claim_ok + tag)  
+           update.message.reply_text(texts.get_text("adm_set_ok").format(tag=tag))  
 
 
 @run_async
@@ -435,11 +435,11 @@ def admin_remove(bot, update):
 
     tag = validate_cmd(update.message.text)
     if tag is None:
-        update.message.reply_text("Use /arm <tag>")
+        update.message.reply_text(texts.get_text("adm_rm_use"))
         return
     
     dbManager.delete_hashtag(tag)
-    update.message.reply_text("[A] Tag removed")
+    update.message.reply_text(texts.get_text("adm_rm_ok"))
 
 
 @run_async
@@ -449,11 +449,11 @@ def admin_reserve(bot, update):
 
     tag = validate_cmd(update.message.text)
     if tag is None:
-        update.message.reply_text("Use /ars <tag>")
+        update.message.reply_text(texts.get_text("adm_reserve_use"))
         return
 
     dbManager.create_hashtag(tag, None, {"type": "text", "data": "Sorry this tag is reserved"}, True)
-    update.message.reply_text("[A] Tag reserved")
+    update.message.reply_text(texts.get_text("adm_reserve_ok"))
 
 
 @run_async
@@ -464,13 +464,13 @@ def admin_info(bot, update):
 
     tag = validate_cmd(update.message.text)
     if tag is None:
-        update.message.reply_text("Use /info <tag>")
+        update.message.reply_text(texts.get_text("adm_info_use"))
         return
     
     res = dbManager.get_hashtag_info(tag)
 
     if res is None:
-        update.message.reply_text(texts.not_found)
+        update.message.reply_text(texts.get_text("not_found"))
         return
 
     update.message.reply_text( adminChannel.format_tag_info_admin(res) )
@@ -484,7 +484,7 @@ def admin_bcast(bot, update):
     parts = update.message.text.split(" ",1)
 
     if len(parts) != 2:
-        update.message.reply_text("Use /bcast <message>")
+        update.message.reply_text(texts.get_text("adm_bcast_use"))
         return
 
     parallel.broadcast_message(bot, update, parts[1])

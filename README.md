@@ -13,6 +13,7 @@ I know, you did not understand a bit of what I said. Just play a bit with Emy an
 * Works on Heroku
 * Automatic database cleanup script
 * Keep track of active chats
+* Localized texts (by desing admin messages can only use one language)
 
 ### Users:
 * Claim unlimited tags
