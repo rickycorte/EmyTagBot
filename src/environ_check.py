@@ -48,17 +48,19 @@ def check():
         if CURR_VAR is None:
             print("[Settings] Missing " + itm + " var value.")
 
+    print("Checking database...")
     #controlla che sia possibile connetersi a mongodb
-    client = MongoClient( os.environ.get('MONGODB_URI', 'error') )
+    client = None
 
     try:
-        #esegui una query a caso per vedere se mongodb va
-        res = client.database_names()
+        #controlla che mongodb vada
+        client = MongoClient( os.environ.get('MONGODB_URI', 'error'), serverSelectionTimeoutMS=100 )
+        res = client.server_info()
     except:
         print("[Critical] Can't connect to mongodb. Check it is up and running. Closing bot.")
         exit(2)
     
-
+    print("Checking firebase credentials...")
     #controlla che ci siano le credenziali di firebase
     db = client[ os.environ.get('DB_NAME', 'EmyTagBot') ]
     res = db.firebase.find_one()
