@@ -13,6 +13,7 @@ I know, you did not understand a bit of what I said. Just play a bit with Emy an
 * Works on Heroku
 * Automatic database cleanup script
 * Keep track of active chats
+* Environment variables, database, credentials check on boot
 
 ### Users:
 * Claim unlimited tags
@@ -99,6 +100,8 @@ I know, you did not understand a bit of what I said. Just play a bit with Emy an
 `WARNS_BEFORE_BAN`: max number of warnings before account ban
 
 `WEB_TOP_TAG_LIST_SIZE`:  number of elements to show in top page
+
+`DEBUG`: set true if you want to run the bot with polling
 
 ## Setup Firebase
 Add your firebase admin json as a document called `firebase` in your database

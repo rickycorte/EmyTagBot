@@ -24,6 +24,12 @@
 #
 ###################################################################################
 
+import environ_check  
+#esegui il check di tutte le variabili e di mongodb appena viene importato
+#se ci sono errori termina l'esecuzione del bot in automatico
+environ_check.check()
+
+
 import os
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, InlineQueryHandler
