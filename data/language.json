@@ -2,167 +2,166 @@
   "welcome_message":
     {
         "default": "Hiii :3!\nType /help to understand how I work, have fun! Almost forgot to say that you need to keep a private chat with me if you want to recive important notifications!",
-        "it": "Ciao fagiano! Piu tardi traduco sta roba :#"
+        "it": "Ciao :3!\n Scrivi /help per capire come funziono, buon divertimento! Mi stavo quasi dimenticando di dirti che devi avviare una chat privata con me se vuoi ricevere eventuali notifiche!"
     },
    "claim_reply":
    {
        "default": "Use: Quote a message and then type /claim #your_awesome_tag\nRemember that the data you set will be available EVERYWHERE untill you delete it or is removed after it expires",
-       "it":""
+       "it":"Uso: Cita un messaggio e scrivi /claim #il_tuo_fantastico_tag\nRicorda che i dati che imposti saranno visibile OVUNQUE fino a che il tag non e' rimosso manulamente o termina il tempo a sua disposizione"
    },
    "claim_error":
    {
        "default": "Sorry, someone else owns that tag",
-       "it":""
+       "it":"Mi dispiace, qualcuno possiede gia quel tag"
    },
    "help_reply":
    {
-       "default": "Use /claim to set an unclaimed hashtag. I'll remember the data for you but be carefull, what you set will be available EVERYWHERE until removed.\nEvery hashtag has a lifetime, when it expires the tag will be freed and returned to the wild.\nNote: every time the tag is used its lifetime is reset, so it won't be deleted :3\n\nYou can also use inline queries to post tags data, but be aware that INLINE operations DO NOT count as 'tag uses'. This means that tag lifetime and stats ARE NOT modified!\nAlso remember that inline results can take up to 10 minutes to update",
-       "it":""
+       "default": "Use /claim to set an unclaimed hashtag. I'll remember that what you set will be available EVERYWHERE until removed.\nEvery hashtag has a lifetime, when it expires the tag will be freed and returned to the wild.\nNote: everytime the tag is used its lifetime is reset, so it won't be deleted :3\n\nYou can also use inline queries to post tags data, but be aware that INLINE operations DO NOT count as 'tag uses'. This means that tag lifetime and stats ARE NOT modified!\nAlso remember that inline results can take up to 10 minutes to update",
+       "it":"Usa /claim per impostare un tag libero. Ricorda che i dati che imposti saranno visibili OVUNQUE sino alla rimozione.\nOgni hashtag ha una vita, quando questa si esaurisce il tag viene liberato e torna disponibile.\nNota: ogni volta che un tag viene usato, la sua vita e' ripristinata e quindi non viene eliminato :3.\n\nPuoi asare anche le query inline per inviare dei tag, ma ricorda che questa operazione non viene contata come uso dell'hashtag. Questo significa che la vita del tag non viene resettata! Un altra cosa da tenere presente e' che le query inline potrebbero impiegare fino a 10 minuti per mostrare i nuovi tag"
    },
    "auth_error":
    {
        "default": "Sorry, you don't have the rights to run this command",
-       "it":""
+       "it":"Mi dispiace, non hai il permesso di eseguire quel comando"
    },
    "report_send_success":
    {
        "default": "Thank you for your report, I'll check it as soon as possibile",
-       "it":""
+       "it":"Grazie per la segnalazione, controllero il prima possibile"
    },
    "report_send_error":
    {
        "default": "Sorry, you have just a report registered for this hashtag",
-       "it":""
+       "it": "Mi spiace, hai gia una segnalazione attiva per quel tag"
    },
    "report_no_tag_error":
    {
        "default": "That hashtag does not exist",
-       "it":""
+       "it":"Quel tag non esiste"
    },
    "report_not_allowed":
    {
        "default": "Sorry, you can't report system tags",
-       "it":""
+       "it":"Mi spiace, ma non puoi segnalare i tag di sistema"
    },
    "top_list_error":
    {
        "default": "Nothing to show yet",
-       "it":""
+       "it":"Non c'e' nulla da vedere qui"
    },
    "top_list_header":
    {
-       "default": "Top hashtags:\n",
-       "it":""
+       "default": "Top hashtags:\n"
    },
    "generic_error":
    {
        "default": "I can't process your request, sorry",
-       "it":""
+       "it":"Non posso processare la tua richiesta, mi dispiace"
    },
    "tag_not_owned":
    {
        "default": "You don't own it!",
-       "it":""
+       "it":"Non possiedi quel tag"
    },
    "tag_remove_ok":
    {
        "default": "Removed your tag :#",
-       "it":""
+       "it":"Ho cancellato il tuo tag :#"
    },
    "quote_missing":
    {
        "default": "Please quote a message",
-       "it":""
+       "it":"Ricordati di citare un messaggio"
    },
    "too_much_chars":
    {
        "default": "I can't remember all of your text",
-       "it":""
+       "it":"Non posso ricordarmi tutto quel testo"
    },
    "claim_ok":
    {
-       "default": "Yay! Have fun with: ",
-       "it":""
+       "default": "Yay! Have fun with ",
+       "it":"Yay! Divertiti con "
    },
    "not_found":
    {
        "default": "Did you forgot? That tag is free :3",
-       "it":""
+       "it":"Ti sei dimenticato? Quel tag e' libero :3"
    },
    "edit_ok":
    {
        "default": "{old} moved to {new}",
-       "it":""
+       "it":"{old} traslocato a {new}"
    },
    "edit_tag_error":
    {
        "default": "Please check that the first tag exist and that the second one is free and the retry",
-       "it":""
+       "it":"Controlla che il primo tag esista e che il secondo sia libero, a quel punto riprova."
    },
    "edit_perm_error":
    {
        "default": "Sorry but one of the tags is not yours",
-       "it":""
+       "it":"Mi spiace, ma uno dei tag non e' tuo"
    },
    "mytags_message":
    {
        "default": "Your tag list is ready at: https://emytagbot.ml/user.html?",
-       "it":""
+       "it":"La tua lista tag e' pronta: https://emytagbot.ml/user.html?"
    },
    "report_short":
    {
        "default": "Report message must be long at least 6 characters",
-       "it":""
+       "it":"Le segnalazioni devo contenere almeno 6 caratteri"
    },
    "warn_received":
    {
        "default": "Your account has been warned. Some more warning and you will get banned!",
-       "it":""
+       "it":"Il tuo account ha ricevuto una warning. Stai attento, se continui cosi verrai bannato!"
    },
    "ban_received":
    {
        "default": "Due to your bad behaviour I decided to ban your account. You won't be able to claim, edit and report tags anymore. Goodbay, it has been fun!",
-       "it":""
+       "it":"Siccome ti comporti male ho deciso di bannare il tuo account. Non sarai piu in grado di claimare, modificare e segnalare tag. Addio, e' stato divertente!"
    },
    "rm_tag_free":
    {
        "default": "Hey! I can't delete a nullptr or I'll break things 3:",
-       "it":""
+       "it":"Hey! Non posso cancellare un nullptr o rompero tutto :3"
    },
    "complete_list":
    {
        "default": "See complete list at: https://emytagbot.ml/top.html",
-       "it":""
+       "it":"Guarda la lista completa: https://emytagbot.ml/top.html"
    },
    "cmd_info_use":
    {
         "default": "Use /remove <tag>",
-        "it":""
+        "it":"Usa /remove <tag"
    },
    "cmd_rm_use":
    {
         "default": "Use /info <tag>",
-        "it":""
+        "it":"Usa /info <tag>"
    },
    "info_msg_user":   
    {
         "default": "{tag}\nType: {type}\nUsed: {used} times\nCreation: {dtc}\nExpire: {dte}",
-        "it":""
+        "it":"{tag}\nTipo: {type}\nUsato: {used} volte\nCreato: {dtc}\nScade in: {dte}"
    },
    "info_msg_system":
    {
         "default": "{tag}\n~ Reserved by the system ~\nType: {type}\nUsed: {used} times\nExpire: Never",
-        "it":""
+        "it":"{tag}\n~ Riservato dal sistema ~\nTipo: {type}\nUsato: {used} volte\nCreato: {dtc}\nScade: Mai"
    },
    "cmd_edit_use":
    {
         "default": "Use /edit <old tag> <new tag>",
-        "it":""
+        "it":"Usa /edit <vecchio tag> <nuovo tag>"
    },
    "cmd_report_use":
    {
         "default": "Use /report <tag> <message>",
-        "it":""
+        "it":"Usa /report <tag> <messaggio>"
    },
    "adm_set_use":
    {
