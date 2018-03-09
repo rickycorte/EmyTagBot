@@ -37,7 +37,7 @@ def check():
         CURR_VAR = os.environ.get(itm, None)
         if CURR_VAR is None:
             print("[Critical] Missing " + itm + " var value. Closing bot.")
-            exit()
+            exit(1)
 
     #controlla che le variabili accessorie siano state settate altrimenti printa un avviso
     print("Checking other variables...")
@@ -56,7 +56,7 @@ def check():
         res = client.database_names()
     except:
         print("[Critical] Can't connect to mongodb. Check it is up and running. Closing bot.")
-        exit()
+        exit(2)
     
 
     #controlla che ci siano le credenziali di firebase
@@ -64,4 +64,6 @@ def check():
     res = db.firebase.find_one()
     if res is None:
         print("[Critical] Can't find firebase credentials. Closing bot.")
-        exit()
+        exit(3)
+    
+    print("Check complete, starting bot")
