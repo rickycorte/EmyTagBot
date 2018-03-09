@@ -63,7 +63,8 @@ def format_tag_info_admin(tag_dict):
         used = str(tag_dict["use_count"]),
         exp = dbManager.calculate_delta_now(tag_dict["last_use_date"]),
         crt = tag_dict["creation_date"].strftime("%d/%m/%y"),
-        rep = reports
+        rep = reports,
+        inl = str(tag_dict["inline_count"] if "inline_count" in tag_dict else 0)
         )
 
 
@@ -85,7 +86,7 @@ def send_report_data(bot, tag_dict):
     user_id = tag_dict["owner"]["id"]
     tag_id = tag_dict["_id"]
 
-    if isinstance(tag_id, dict) and tag["$oid"] is not None:
+    if isinstance(tag_id, dict) and tag_dict["$oid"] is not None:
         tag_id = tag_id["$oid"]
 
     keyboard = [

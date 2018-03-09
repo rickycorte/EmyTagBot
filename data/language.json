@@ -146,12 +146,12 @@
    "info_msg_user":   
    {
         "default": "{tag}\nType: {type}\nUsed: {used} times\nInline: {inl}\nCreation: {dtc}\nExpire: {dte}",
-        "it":"{tag}\nTipo: {type}\nUsato: {used} volte\nInline: {inl}Creato: {dtc}\nScade in: {dte}"
+        "it":"{tag}\nTipo: {type}\nUsato: {used} volte\nInline: {inl}\nCreato: {dtc}\nScade in: {dte}"
    },
    "info_msg_system":
    {
         "default": "{tag}\n~ Reserved by the system ~\nType: {type}\nUsed: {used} times\nInline: {inl}\nExpire: Never",
-        "it":"{tag}\n~ Riservato dal sistema ~\nTipo: {type}\nUsato: {used} volte\n\nInline: {inl}Creato: {dtc}\nScade: Mai"
+        "it":"{tag}\n~ Riservato dal sistema ~\nTipo: {type}\nUsato: {used} volte\nInline: {inl}\nCreato: {dtc}\nScade: Mai"
    },
    "cmd_edit_use":
    {
@@ -197,11 +197,11 @@
    },   
    "adm_info_msg_usr":
    {
-        "default": "{tag}:\n\nOwner: {owner}\nContry: {region}\n{chat}\nType: {type}\nUsed: {used} times\nExpire: {exp}\nCreation: {crt}\nReports: {rep}"
+        "default": "{tag}:\n\nOwner: {owner}\nCountry: {region}\n{chat}\nType: {type}\nUsed: {used} times\nExpire: {exp}\nInline: {inl}\nCreation: {crt}\nReports: {rep}"
    },
    "adm_info_msg_system":
    {
-        "default": "{tag}:\n~ Reserved by the system ~\nOwner: {owner}\nContry: {region}\n{chat}\nType: {type}\nUsed: {used}\nExpire: Never\nReports: Disabled"
+        "default": "{tag}:\n~ Reserved by the system ~\nOwner: {owner}\nCountry: {region}\n{chat}\nType: {type}\nUsed: {used}\nInline: {inl}\nExpire: Never\nReports: Disabled"
    },
    "admc_clear_reports":
    {
