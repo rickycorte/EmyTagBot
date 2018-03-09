@@ -289,7 +289,8 @@ def info(bot, update):
             type = res["data"]["type"],
             used = str(res["use_count"]),
             dtc = res["creation_date"].strftime("%d/%m/%y"),
-            dte = dbManager.calculate_delta_now(res["last_use_date"])
+            dte = dbManager.calculate_delta_now(res["last_use_date"]),
+            inl = str(res["inline_count"] if "inline_count" in res else 0)
         )
 
     update.message.reply_text(reply)

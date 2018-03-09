@@ -280,7 +280,6 @@ def change_hashtag(old_tag, new_tag):
             } 
         }, upsert=False)
     return 1
-    print ("move done")
     
 
 #calcola la differenza in giorni od ore dalla data passata come parametro a oggi
@@ -310,6 +309,7 @@ def get_user_hashtags(user_id):
                 {
                 "tag": tag["hashtag"],
                 "use": tag["use_count"],
+                "inline": tag["inline_count"] if "inline_count" in tag else 0,
                 "type": tag["data"]["type"],
                 "creation": tag["creation_date"].strftime("%d/%m/%y"),
                 "expire": calculate_delta_now(tag["last_use_date"]),
@@ -427,3 +427,14 @@ def get_bcast_chats():
 #cerca un tag parziale e resituisci al massimo 5 risultati
 def search_partial_tag(tag):
     return db.hashtags.find({"hashtag": {"$regex": "\\b"+tag} }).limit(5)
+
+
+#aggiorna il numero di ricerche inline (non tiene conto della cache) + aggiorna la data di ultimo uso
+def inline_update_tag(tag):
+    db.hashtags.update_one( {"_id": tag["_id"]}, 
+        {"$set": 
+            {
+                "inline_count": (tag["inline_count"] + 1) if "inline_count" in tag else 1 ,
+                "last_use_date": datetime.datetime.utcnow() 
+            } 
+        }, upsert=False)

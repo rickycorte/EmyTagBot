@@ -2,7 +2,7 @@
   "welcome_message":
     {
         "default": "Hiii :3!\nType /help to understand how I work, have fun! Almost forgot to say that you need to keep a private chat with me if you want to recive important notifications!",
-        "it": "Ciao :3!\n Scrivi /help per capire come funziono, buon divertimento! Mi stavo quasi dimenticando di dirti che devi avviare una chat privata con me se vuoi ricevere eventuali notifiche!"
+        "it": "Ciao :3!\nScrivi /help per capire come funziono, buon divertimento! Mi stavo quasi dimenticando di dirti che devi avviare una chat privata con me se vuoi ricevere eventuali notifiche!"
     },
    "claim_reply":
    {
@@ -16,8 +16,8 @@
    },
    "help_reply":
    {
-       "default": "Use /claim to set an unclaimed hashtag. I'll remember that what you set will be available EVERYWHERE until removed.\nEvery hashtag has a lifetime, when it expires the tag will be freed and returned to the wild.\nNote: everytime the tag is used its lifetime is reset, so it won't be deleted :3\n\nYou can also use inline queries to post tags data, but be aware that INLINE operations DO NOT count as 'tag uses'. This means that tag lifetime and stats ARE NOT modified!\nAlso remember that inline results can take up to 10 minutes to update",
-       "it":"Usa /claim per impostare un tag libero. Ricorda che i dati che imposti saranno visibili OVUNQUE sino alla rimozione.\nOgni hashtag ha una vita, quando questa si esaurisce il tag viene liberato e torna disponibile.\nNota: ogni volta che un tag viene usato, la sua vita e' ripristinata e quindi non viene eliminato :3.\n\nPuoi asare anche le query inline per inviare dei tag, ma ricorda che questa operazione non viene contata come uso dell'hashtag. Questo significa che la vita del tag non viene resettata! Un altra cosa da tenere presente e' che le query inline potrebbero impiegare fino a 10 minuti per mostrare i nuovi tag"
+       "default": "Use /claim to set an unclaimed hashtag. I'll remember that what you set will be available EVERYWHERE until removed.\nEvery hashtag has a lifetime, when it expires the tag will be freed and returned to the wild.\nNote: everytime the tag is used its lifetime is reset, so it won't be deleted :3\n\nYou can also use inline queries to post tags data",
+       "it":"Usa /claim per impostare un tag libero. Ricorda che i dati che imposti saranno visibili OVUNQUE sino alla rimozione.\nOgni hashtag ha una vita, quando questa si esaurisce il tag viene liberato e torna disponibile.\nNota: ogni volta che un tag viene usato, la sua vita e' ripristinata e quindi non viene eliminato :3.\n\nPuoi asare anche le query inline per inviare dei tag"
    },
    "auth_error":
    {
@@ -145,13 +145,13 @@
    },
    "info_msg_user":   
    {
-        "default": "{tag}\nType: {type}\nUsed: {used} times\nCreation: {dtc}\nExpire: {dte}",
-        "it":"{tag}\nTipo: {type}\nUsato: {used} volte\nCreato: {dtc}\nScade in: {dte}"
+        "default": "{tag}\nType: {type}\nUsed: {used} times\nInline: {inl}\nCreation: {dtc}\nExpire: {dte}",
+        "it":"{tag}\nTipo: {type}\nUsato: {used} volte\nInline: {inl}Creato: {dtc}\nScade in: {dte}"
    },
    "info_msg_system":
    {
-        "default": "{tag}\n~ Reserved by the system ~\nType: {type}\nUsed: {used} times\nExpire: Never",
-        "it":"{tag}\n~ Riservato dal sistema ~\nTipo: {type}\nUsato: {used} volte\nCreato: {dtc}\nScade: Mai"
+        "default": "{tag}\n~ Reserved by the system ~\nType: {type}\nUsed: {used} times\nInline: {inl}\nExpire: Never",
+        "it":"{tag}\n~ Riservato dal sistema ~\nTipo: {type}\nUsato: {used} volte\n\nInline: {inl}Creato: {dtc}\nScade: Mai"
    },
    "cmd_edit_use":
    {

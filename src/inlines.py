@@ -49,7 +49,10 @@ def is_allowed_string(text):
 #crea l'apposita risposta per la query inline a partire da un json preso da mongodb
 def make_result_from_db_entry(db_entry):
 
+
     data = db_entry["data"]
+
+    dbManager.inline_update_tag(db_entry)
 
     if data["type"] == "text":
         return InlineQueryResultArticle(
