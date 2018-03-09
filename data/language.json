@@ -1,0 +1,264 @@
+{
+  "welcome_message":
+    {
+        "default": "Hiii :3!\nType /help to understand how I work, have fun! Almost forgot to say that you need to keep a private chat with me if you want to recive important notifications!",
+        "it": "Ciao fagiano! Piu tardi traduco sta roba :#"
+    },
+   "claim_reply":
+   {
+       "default": "Use: Quote a message and then type /claim #your_awesome_tag\nRemember that the data you set will be available EVERYWHERE untill you delete it or is removed after it expires",
+       "it":""
+   },
+   "claim_error":
+   {
+       "default": "Sorry, someone else owns that tag",
+       "it":""
+   },
+   "help_reply":
+   {
+       "default": "Use /claim to set an unclaimed hashtag. I'll remember the data for you but be carefull, what you set will be available EVERYWHERE until removed.\nEvery hashtag has a lifetime, when it expires the tag will be freed and returned to the wild.\nNote: every time the tag is used its lifetime is reset, so it won't be deleted :3\n\nYou can also use inline queries to post tags data, but be aware that INLINE operations DO NOT count as 'tag uses'. This means that tag lifetime and stats ARE NOT modified!\nAlso remember that inline results can take up to 10 minutes to update",
+       "it":""
+   },
+   "auth_error":
+   {
+       "default": "Sorry, you don't have the rights to run this command",
+       "it":""
+   },
+   "report_send_success":
+   {
+       "default": "Thank you for your report, I'll check it as soon as possibile",
+       "it":""
+   },
+   "report_send_error":
+   {
+       "default": "Sorry, you have just a report registered for this hashtag",
+       "it":""
+   },
+   "report_no_tag_error":
+   {
+       "default": "That hashtag does not exist",
+       "it":""
+   },
+   "report_not_allowed":
+   {
+       "default": "Sorry, you can't report system tags",
+       "it":""
+   },
+   "top_list_error":
+   {
+       "default": "Nothing to show yet",
+       "it":""
+   },
+   "top_list_header":
+   {
+       "default": "Top hashtags:\n",
+       "it":""
+   },
+   "generic_error":
+   {
+       "default": "I can't process your request, sorry",
+       "it":""
+   },
+   "tag_not_owned":
+   {
+       "default": "You don't own it!",
+       "it":""
+   },
+   "tag_remove_ok":
+   {
+       "default": "Removed your tag :#",
+       "it":""
+   },
+   "quote_missing":
+   {
+       "default": "Please quote a message",
+       "it":""
+   },
+   "too_much_chars":
+   {
+       "default": "I can't remember all of your text",
+       "it":""
+   },
+   "claim_ok":
+   {
+       "default": "Yay! Have fun with: ",
+       "it":""
+   },
+   "not_found":
+   {
+       "default": "Did you forgot? That tag is free :3",
+       "it":""
+   },
+   "edit_ok":
+   {
+       "default": "{old} moved to {new}",
+       "it":""
+   },
+   "edit_tag_error":
+   {
+       "default": "Please check that the first tag exist and that the second one is free and the retry",
+       "it":""
+   },
+   "edit_perm_error":
+   {
+       "default": "Sorry but one of the tags is not yours",
+       "it":""
+   },
+   "mytags_message":
+   {
+       "default": "Your tag list is ready at: https://emytagbot.ml/user.html?",
+       "it":""
+   },
+   "report_short":
+   {
+       "default": "Report message must be long at least 6 characters",
+       "it":""
+   },
+   "warn_received":
+   {
+       "default": "Your account has been warned. Some more warning and you will get banned!",
+       "it":""
+   },
+   "ban_received":
+   {
+       "default": "Due to your bad behaviour I decided to ban your account. You won't be able to claim, edit and report tags anymore. Goodbay, it has been fun!",
+       "it":""
+   },
+   "rm_tag_free":
+   {
+       "default": "Hey! I can't delete a nullptr or I'll break things 3:",
+       "it":""
+   },
+   "complete_list":
+   {
+       "default": "See complete list at: https://emytagbot.ml/top.html",
+       "it":""
+   },
+   "cmd_info_use":
+   {
+        "default": "Use /remove <tag>",
+        "it":""
+   },
+   "cmd_rm_use":
+   {
+        "default": "Use /info <tag>",
+        "it":""
+   },
+   "info_msg_user":   
+   {
+        "default": "{tag}\nType: {type}\nUsed: {used} times\nCreation: {dtc}\nExpire: {dte}",
+        "it":""
+   },
+   "info_msg_system":
+   {
+        "default": "{tag}\n~ Reserved by the system ~\nType: {type}\nUsed: {used} times\nExpire: Never",
+        "it":""
+   },
+   "cmd_edit_use":
+   {
+        "default": "Use /edit <old tag> <new tag>",
+        "it":""
+   },
+   "cmd_report_use":
+   {
+        "default": "Use /report <tag> <message>",
+        "it":""
+   },
+   "adm_set_use":
+   {
+        "default": "Use /aset <tag>"
+   },
+   "adm_set_ok":
+   {
+        "default": "[A] Claimed {tag}"
+   },  
+   "adm_rm_use":
+   {
+        "default": "Use /arm <tag>"
+   },
+   "adm_rm_ok":
+   {
+        "default": "[A] Tag removed"
+   }, 
+   "adm_reserve_use":
+   {
+        "default": "Use /ars <tag>"
+   }, 
+   "adm_reserve_ok":
+   {
+        "default": "[A] Tag reserved"
+   },
+   "adm_info_use":
+   {
+        "default": "Use /ainfo <tag>"
+   },
+   "adm_bcast_use":
+   {
+        "default": "Use /bcast <message>"
+   },   
+   "adm_info_msg_usr":
+   {
+        "default": "{tag}:\n\nOwner: {owner}\nContry: {region}\n{chat}\nType: {type}\nUsed: {used} times\nExpire: {exp}\nCreation: {crt}\nReports: {rep}"
+   },
+   "adm_info_msg_system":
+   {
+        "default": "{tag}:\n~ Reserved by the system ~\nOwner: {owner}\nContry: {region}\n{chat}\nType: {type}\nUsed: {used}\nExpire: Never\nReports: Disabled"
+   },
+   "admc_clear_reports":
+   {
+        "default": "Clear reports"
+   },
+   "admc_remove_tag":
+   {
+        "default": "Remove tag"
+   },
+   "admc_show_tag":
+   {
+        "default": "Show Tag Data (Private Chat)"
+   },
+   "admc_case_delete_tag":
+   {
+        "default": "Deleted tag"
+   },
+   "admc_case_delete_warn_tag":
+   {
+        "default": "Deleted tag and warned user"
+   },
+   "admc_case_delete_ban_tag":
+   {
+        "default": "Deleted tag and banned user"
+   },
+   "admc_missing_tag_data":
+   {
+        "default": "Error: can't find tag"
+   },
+   "admc_case_closed":
+   {
+        "default": "{head}\nAction:{act}\nAuthor: {aut}\nDate: {dt}\n~~~ CASE CLOSED ~~~"
+   },
+   "admc_report_clear":
+   {
+        "default": "Reports cleared"
+   },
+   "admc_bad_tag_warn":
+   {
+        "default": "Hey, I just deleted {tag} because it was inopportune!"
+   },
+   "admc_warn_usr":
+   {
+        "default": "Warn user"
+   },
+   "admc_ban_usr":
+   {
+        "default": "Ban User"
+   },
+   "admc_close_case":
+   {
+        "default": "Close case"
+   },
+   "admc_pending_adm_action":
+   {
+        "default": "Tag removed\nWhat should I do now?"
+   }
+   
+}

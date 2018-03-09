@@ -13,7 +13,11 @@ I know, you did not understand a bit of what I said. Just play a bit with Emy an
 * Works on Heroku
 * Automatic database cleanup script
 * Keep track of active chats
+<<<<<<< HEAD
 * Environment variables, database, credentials check on boot
+=======
+* Localized texts (by desing admin messages can only use one language)
+>>>>>>> f9cb24b0886316784dcdc0058b30593cc25b415d
 
 ### Users:
 * Claim unlimited tags

@@ -37,29 +37,35 @@ CHANNEL_ID = int( os.environ.get('ADMIN_CHANNEL', 0) )
 
 #formatta il dict del tag ricevuto da mongodb in un messaggio da mostrare ai soli admin
 def format_tag_info_admin(tag_dict):
-    
-    reply = tag_dict["hashtag"]+":\n"
+
+    reply = ""
+
+    #prepara i dati lunghi da inserire
     if tag_dict["reserved"] == True:
-        reply += "~ Reserved by the system ~\n"
-
-    reply += "Owner: " + tag_dict["owner"]["first_name"] + " " + tag_dict["owner"]["last_name"] + " @"+tag_dict["owner"]["username"] + "\n"
-    reply += "Country: " + tag_dict["owner"]["region"] + "\n"
-    reply += tag_dict["origin_chat"]["type"] + " chat: " + tag_dict["origin_chat"]["name"] + "\n"
-    
-    reply += "Type: " + tag_dict["data"]["type"] + "\n"
-    reply += "Used: " + str(tag_dict["use_count"]) + " times\n"
-         
-    if tag_dict["reserved"] == True: 
-        reply += "Expire: Never\n"   
+        reply = texts.get_text("adm_info_msg_system") 
     else:
-        reply += "Expire: " + dbManager.calculate_delta_now(tag_dict["last_use_date"])+"\n"
-        reply += "Creation: " + tag_dict["creation_date"].strftime("%d/%m/%y")+"\n"
+        reply = texts.get_text("adm_info_msg_usr")
 
-    reply += "Reports: "
+    ow = tag_dict["owner"]["first_name"] + " " + tag_dict["owner"]["last_name"] + " @"+tag_dict["owner"]["username"]
+    chat = tag_dict["origin_chat"]["type"] + " chat: " + tag_dict["origin_chat"]["name"]
+
+    reports = ""
     for report in tag_dict["reports"]:
-        reply +="\n - " + report["text"]
+        reports +="\n - " + report["text"]
 
-    return reply
+    #formatta la stringa e retituiscila
+    return reply.format(
+        tag = tag_dict["hashtag"],
+        region = tag_dict["owner"]["region"],
+        owner = ow,
+        chat = chat,
+        type = tag_dict["data"]["type"],
+        used = str(tag_dict["use_count"]),
+        exp = dbManager.calculate_delta_now(tag_dict["last_use_date"]),
+        crt = tag_dict["creation_date"].strftime("%d/%m/%y"),
+        rep = reports
+        )
+
 
 
 #restituisce un id per identificare l'azione associata a un preciso tag di un utente
@@ -83,10 +89,10 @@ def send_report_data(bot, tag_dict):
         tag_id = tag_id["$oid"]
 
     keyboard = [
-                    [InlineKeyboardButton("Clear reports", callback_data = make_button_data("cr",user_id,tag_id) ),
-                     InlineKeyboardButton("Remove tag", callback_data = make_button_data("rt",user_id,tag_id) )],
+                    [InlineKeyboardButton(texts.get_text("admc_clear_reports"), callback_data = make_button_data("cr",user_id,tag_id) ),
+                     InlineKeyboardButton(texts.get_text("admc_remove_tag"), callback_data = make_button_data("rt",user_id,tag_id) )],
 
-                    [InlineKeyboardButton("Show Tag Data (Private Chat)", callback_data = make_button_data("st",user_id,tag_id) )] 
+                    [InlineKeyboardButton(texts.get_text("admc_show_tag"), callback_data = make_button_data("st",user_id,tag_id) )] 
                 ]
     
 
@@ -114,22 +120,22 @@ def query_handler(bot, update):
         remove_tag(bot,update, parts[2])
 
     if parts[0] == "nb":
-        close_case(bot, update, None, "deleted tag")
+        close_case(bot, update, None, texts.get_text("admc_case_delete_tag"))
     
     if parts[0] == "wu":
         r = dbManager.warn_user(int(parts[1]))
 
         if r == 1:
-            send_private_message(bot, int(parts[1]), texts.warn_received)
-            close_case(bot, update, None, "deleted tag and warned user")
+            send_private_message(bot, int(parts[1]), texts.get_text("warn_received", update.message.from_user.language_code))
+            close_case(bot, update, None, texts.get_text("admc_case_delete_warn_tag"))
         else:
-            send_private_message(bot, int(parts[1]), texts.ban_received)
-            close_case(bot, update, None, "deleted tag and banned user")
+            send_private_message(bot, int(parts[1]), texts.get_text("ban_received", update.message.from_user.language_code))
+            close_case(bot, update, None, texts.get_text("admc_case_delete_ban_tag"))
 
 
     if parts[0] == "bu":
         dbManager.ban_user(int(parts[1]))
-        close_case(bot, update, None, "deleted tag and banned user")
+        close_case(bot, update, None, texts.get_text("admc_case_delete_ban_tag"))
 
     #bot.sendMessage(chat_id=CHANNEL_ID,text = "Selected: "+query.data)
 
@@ -139,7 +145,7 @@ def send_tag_data_to_private_chat(bot, update, tag_id):
 
     result = dbManager.get_tag_by_id(tag_id)
     if result is None:
-       bot.sendMessage(chat_id=update.callback_query.from_user.id, text = "Error: can't find tag")
+       bot.sendMessage(chat_id=update.callback_query.from_user.id, text = texts.get_text("admc_missing_tag_data"))
        return
 
     uid = update.callback_query.from_user.id
@@ -170,17 +176,21 @@ def send_tag_data_to_private_chat(bot, update, tag_id):
 def close_case(bot, update, db_data, message):
     qr = update.callback_query
 
-    reply = ""
+    reply = texts.get_text("admc_case_closed")
+    head = ""
 
     if db_data is not None:
-        reply = "Tag "+ db_data["hashtag"]+":\n"
+        head = "Tag "+ db_data["hashtag"]+":"
     else:
-        reply = "Deleted tag\n"
+        head = texts.get_text("admc_case_delete_tag")
 
-    reply += "Action: "+ message +"\n"
-    reply += "Author: " + qr.from_user.first_name +" ("+qr.from_user.username+")\n"
-    reply += "Date: "+ datetime.datetime.utcnow().strftime("%d/%m/%y")+"\n"
-    reply += "~~~ CASE CLOSED ~~~"
+    reply = reply.format(
+        head = head,
+        act = message,
+        aut = qr.from_user.first_name +" ("+qr.from_user.username+")",
+        dt = datetime.datetime.utcnow().strftime("%d/%m/%y")
+
+    )
 
     bot.edit_message_text(text = reply, chat_id=qr.message.chat_id, message_id=qr.message.message_id)
 
@@ -188,7 +198,7 @@ def close_case(bot, update, db_data, message):
 #elimina tutti i report di un tag e modifica il messaggio per avvisare del completamento dell'operazione
 def clear_reports(bot, update, tag_id):
     res = dbManager.remove_reports(tag_id)
-    close_case(bot,update,res,"reports cleared")
+    close_case(bot,update,res,texts.get_text("admc_report_clear"))
 
 
 
@@ -197,7 +207,7 @@ def remove_tag(bot, update, tag_id):
 
     res = dbManager.get_tag_by_id(tag_id)
 
-    send_private_message(bot, res["origin_chat"]["id"] , "Hey, I just deleted "+res["hashtag"]+" because it was inopportune!")
+    send_private_message( bot, res["origin_chat"]["id"] , texts.get_text("admc_bad_tag_warn").format(tag=res["hashtag"]) )
 
     dbManager.delete_tag_by_id(tag_id)
 
@@ -207,17 +217,17 @@ def remove_tag(bot, update, tag_id):
 
     keyboard = [
                     [
-                        InlineKeyboardButton("Warn user", callback_data = make_button_data("wu",user_id,tag_id) ),
-                        InlineKeyboardButton("Ban User", callback_data = make_button_data("bu",user_id,tag_id) )
+                        InlineKeyboardButton(texts.get_text("admc_warn_usr"), callback_data = make_button_data("wu",user_id,tag_id) ),
+                        InlineKeyboardButton(texts.get_text("admc_ban_usr"), callback_data = make_button_data("bu",user_id,tag_id) )
                     ],
                     [
-                        InlineKeyboardButton("Close case", callback_data = make_button_data("nb",user_id,tag_id) ),
+                        InlineKeyboardButton(texts.get_text("admc_close_case"), callback_data = make_button_data("nb",user_id,tag_id) ),
                     ]
 
 
                 ]
     
-    bot.edit_message_text(text = "Tag removed\nWhat should I do now?", chat_id=qr.message.chat_id, message_id=qr.message.message_id, 
+    bot.edit_message_text(text = texts.get_text("admc_pending_adm_action"), chat_id=qr.message.chat_id, message_id=qr.message.message_id, 
         reply_markup=InlineKeyboardMarkup(keyboard) )
 
 

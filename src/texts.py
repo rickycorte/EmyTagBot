@@ -1,57 +1,55 @@
-welcome_message = "Hiii :3!\n Type /help to understand how I work, have fun! Almost forgot to say that you need to keep a private chat with me if you want to recive important notifications!"
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-claim_reply = 'Use: Quote a message and then type /claim #your_awesome_tag\n'
-claim_reply += 'Remember that the data you set will be available EVERYWHERE untill you delete it or is removed after it expires'
+###################################################################################
+#
+#    EmyTagBot
+#    A Telegram bot meant to create user-based hashtags contents with text, images, audios, sticker, videos.
+#    Copyright (C) 2018  RickyCorte
+#    https://github.com/rickycorte
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+###################################################################################
 
-claim_error = "Sorry, someone else owns that tag"
+import json
+import os 
 
-help_reply = "Use /claim to set an unclaimed hashtag. I'll remember the data for you but be carefull, what you set will be available EVERYWHERE until removed."
-help_reply+= "\nEvery hashtag has a lifetime, when it expires the tag will be freed and returned to the wild."
-help_reply+= "\nNote: every time the tag is used its lifetime is reset, so it won't be deleted :3\n\n"
-help_reply+= "You can also use inline queries to post tags data, but be aware that INLINE operations DO NOT count as 'tag uses'. "
-help_reply += "This means that tag lifetime and stats ARE NOT modified!"
+my_path = os.path.abspath(os.path.dirname(__file__))
+j_path =  os.path.join(my_path, "../data/language.json")
 
-auth_error = "Sorry, you don't have the rights to run this command"
+#carica il json dei testi
+if not os.path.exists(j_path) or os.path.getsize(j_path) <= 0:
+    print ("[CRITICAL ERROR]: Unable to load language file! Please check that data/language.json is present")
+    exit(1)
 
-report_send_success = "Thank you for your report, I'll check it as soon as possibile"
+language_fp = open(j_path)
 
-report_send_error = "Sorry, you have just a report registered for this hashtag"
+language = json.load(language_fp)
 
-report_no_tag_error = "That hashtag does not exist"
-
-report_not_allowed = "Sorry, you can't report system tags"
-
-top_list_error = "Nothing to show yet"
-
-top_list_header = "Top hashtags:\n"
-
-generic_error = "I can't process your request, sorry"
-
-tag_not_owned = "You don't own it!"
-
-tag_remove_ok = "Removed your tag :#"
-
-quote_missing = "Please quote a message"
-
-too_much_chars = "I can't remember all of your text"
-
-claim_ok = "Yay! Have fun with: "
-
-not_found = "Did you forgot? That tag is free :3"
-
-edit_ok = " moved to "
-
-edit_tag_error = "Please check that the first tag exist and that the second one is free and the retry"
-
-edit_perm_error = "Sorry but one of the tags is not yours"
-
-mytags_message= "Your tag list is ready at: https://emytagbot.ml/user.html?"
-
-report_short = "Report message must be long at least 6 characters"
+language_fp.close()
 
 
-warn_received = "Your account has been warned. Some more warning and you will get banned!"
-
-ban_received = "Due to your bad behaviour I decided to ban your account. You won't be able to claim, edit and report tags anymore. Goodbay, it has been fun!"
-
-rm_tag_free = "Hey! I can't delete a nullptr or I'll break things 3:"
+# ottieni il testo associato al nome assegnato del json
+# il code e' il codice regione di una specifica traduzione, se non trovato ritorna il testo di default
+# se l'id non esiste restituisce un messaggio di errore
+def get_text(id, code = "default"):
+    if not id in language:
+        return "Missing language key: "+id
+    
+    if code in language[id]:
+        return language[id][code]
+    else:
+        return language[id]["default"]
