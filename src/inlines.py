@@ -31,6 +31,7 @@ import dbManager
 import telegram
 import string
 import os
+import parallel
 
 
 checker = string.ascii_letters + string.digits+"_#"
@@ -143,4 +144,6 @@ def inline_query(bot, update):
         query_text="default query"
     print ("replied to inline: "+query_text)
 
-    update.inline_query.answer(results) 
+    update.inline_query.answer(results)
+
+    parallel.send_stats_event(update.inline_query.from_user.id, update.inline_query , "inline_query")

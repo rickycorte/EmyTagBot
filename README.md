@@ -74,7 +74,7 @@ I know, you did not understand a bit of what I said. Just play a bit with Emy an
 
 [REQUIRED] `TOKEN`: telegram bot token
 
-[REQUIRED] `PORT`: post to bind
+[REQUIRED] `PORT`: port to bind
 
 [REQUIRED] `APP_LINK`: link to use to set webhook (/token) will be added
 
@@ -85,6 +85,8 @@ I know, you did not understand a bit of what I said. Just play a bit with Emy an
 [REQUIRED] `MONGODB_URI`: MongoDB url
 
 [REQUIRED] `DB_NAME`: Database to use
+
+[REQUIRED] `BOTAN`: Botan.io api token (Yandex)
 
 `MAX_HASHTAG_SIZE`:  max length of a valid hashtag
 

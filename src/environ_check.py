@@ -32,7 +32,7 @@ def check():
     #controlla che tutte le variabili necessarie siano state settate altrimenti chiudi il bot
     print("Checking required variables...")
 
-    crit_vars = ['TOKEN','PORT','APP_LINK','ADMIN','ADMIN_CHANNEL','MONGODB_URI','DB_NAME']
+    crit_vars = ['TOKEN','PORT','APP_LINK','ADMIN','ADMIN_CHANNEL','MONGODB_URI','DB_NAME', 'BOTAN']
     for itm in crit_vars:
         CURR_VAR = os.environ.get(itm, None)
         if CURR_VAR is None:

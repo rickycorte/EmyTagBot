@@ -203,6 +203,8 @@ def start(bot, update):
     update.message.reply_text(texts.get_text("welcome_message",update.message.from_user.language_code))
     dbManager.add_chat_to_bcast_list(update.message.chat.id)
 
+    parallel.send_stats_event(update.message.from_user.id, update.message, "start")
+
 
 
 #comando claim
@@ -213,6 +215,8 @@ def claim(bot, update):
         return
 
     tag = validate_cmd(update.message.text)
+
+    parallel.send_stats_event(update.message.from_user.id, update.message, "claim")
 
     if tag is None:
         update.message.reply_text(texts.get_text("claim_reply",update.message.from_user.language_code))
@@ -244,6 +248,9 @@ def claim(bot, update):
 def remove(bot, update):
     
     tag = validate_cmd(update.message.text)
+
+    parallel.send_stats_event(update.message.from_user.id, update.message, "remove")
+
     if tag is None:
         update.message.reply_text(texts.get_text("cmd_rm_use",update.message.from_user.language_code))
         return
@@ -267,6 +274,9 @@ def remove(bot, update):
 def info(bot, update):
 
     tag = validate_cmd(update.message.text)
+
+    parallel.send_stats_event(update.message.from_user.id, update.message, "info")
+
     if tag is None:
         update.message.reply_text(texts.get_text("cmd_rm_use",update.message.from_user.language_code))
         return
@@ -300,6 +310,7 @@ def info(bot, update):
 @run_async
 def helpme(bot, update):
     update.message.reply_text(texts.get_text("help_reply",update.message.from_user.language_code))
+    parallel.send_stats_event(update.message.from_user.id, update.message, "help")
 
 
 
@@ -307,6 +318,7 @@ def helpme(bot, update):
 @run_async
 def top(bot, update):
     update.message.reply_text(get_hashtag_top_list_message(update))
+    parallel.send_stats_event(update.message.from_user.id, update.message, "top")
 
 
 #comando edit
@@ -317,6 +329,8 @@ def edit(bot, update):
         return
 
     parts = update.message.text.split()
+
+    parallel.send_stats_event(update.message.from_user.id, update.message, "edit")
 
     if len(parts) != 3:
         update.message.reply_text(texts.get_text("cmd_edit_use",update.message.from_user.language_code))
@@ -351,6 +365,8 @@ def report(bot, update):
 
     if dbManager.is_user_banned(update.message.from_user.id) == True:
         return
+
+    parallel.send_stats_event(update.message.from_user.id, update.message, "report")
 
     parts = update.message.text.split(" ",2)
 
@@ -403,6 +419,8 @@ def mytags(bot,update):
 
     print(name+" page is ready")
     update.message.reply_text(texts.get_text("mytags_message",update.message.from_user.language_code) +str(update.message.from_user.id))
+
+    parallel.send_stats_event(update.message.from_user.id, update.message, "mytags")
 
 
 
@@ -514,12 +532,14 @@ def hashtag_message(bot, update):
 
     result = dbManager.search_hashtag(tag)
 
+    parallel.send_stats_event(update.message.from_user.id, update.message, "message")
+
     #hash non trovato
     if result["code"] != 0: 
         return
 
     if result["type"] == "text":
-        bot.sendMessage(update.message.chat.id,result["reply"])
+        bot.sendMessage(update.message.chat.id, result["reply"])
 
     if result["type"] == "image":
         bot.sendPhoto(update.message.chat.id,result["reply"])
@@ -587,6 +607,9 @@ def main():
 
     #inline query
     dispatcher.add_handler(InlineQueryHandler(inlines.inline_query))
+
+    # start stats
+    parallel.start_stats_processor()
 
     # start bot
 
