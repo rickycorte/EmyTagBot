@@ -15,6 +15,7 @@ I know, you did not understand a bit of what I said. Just play a bit with Emy an
 * Keep track of active chats
 * Environment variables, database, credentials check on boot
 * Localized texts (by desing admin messages can only use one language)
+* Stats based on AppMetrica
 
 ### Users:
 * Claim unlimited tags
@@ -69,6 +70,7 @@ I know, you did not understand a bit of what I said. Just play a bit with Emy an
 * python-telegram-bot
 * pymongo
 * firebase-admin 
+* requests
 
 ## Environment variables
 
