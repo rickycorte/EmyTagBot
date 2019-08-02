@@ -258,6 +258,10 @@
    "admc_pending_adm_action":
    {
         "default": "Tag removed\nWhat should I do now?"
+   },
+   "suspend_input":
+   {
+        "default": "Ogni servizio offerto da Emy e' in via di chiusura, al piu presto potrai recuperare i tuoi tag preferiti.\n\nGrazie per aver usato Emy fino a ora!"
    }
    
 }

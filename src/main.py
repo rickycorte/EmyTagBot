@@ -62,6 +62,8 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 
+SUSPEND_CREATION = bool(os.environ.get('SUSPEND_CREATION', False))
+
 # Funzioni #
 ################################################################################################################################
 
@@ -211,6 +213,10 @@ def start(bot, update):
 @run_async
 def claim(bot, update):
 
+    if SUSPEND_CREATION:
+        update.message.reply_text(texts.get_text("suspend_input", update.message.from_user.language_code))
+        return
+
     if dbManager.is_user_banned(update.message.from_user.id) == True:
         return
 
@@ -246,6 +252,10 @@ def claim(bot, update):
 #comando remove
 @run_async
 def remove(bot, update):
+
+    if SUSPEND_CREATION:
+        update.message.reply_text(texts.get_text("suspend_input", update.message.from_user.language_code))
+        return
     
     tag = validate_cmd(update.message.text)
 
@@ -324,6 +334,10 @@ def top(bot, update):
 #comando edit
 @run_async
 def edit(bot, update):
+
+    if SUSPEND_CREATION:
+        update.message.reply_text(texts.get_text("suspend_input", update.message.from_user.language_code))
+        return
 
     if dbManager.is_user_banned(update.message.from_user.id) == True:
         return
