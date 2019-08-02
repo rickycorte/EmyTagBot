@@ -64,6 +64,8 @@ logger = logging.getLogger(__name__)
 
 SUSPEND_CREATION = bool(os.environ.get('SUSPEND_CREATION', False))
 
+EOF_LINK = os.environ.get('EOF_LINK', 'Ops...')
+
 # Funzioni #
 ################################################################################################################################
 
@@ -202,6 +204,11 @@ def get_message_data(message):
 #il comando start, sarebbe meglio mettere una frase piu decente ma vbb <3
 @run_async
 def start(bot, update):
+
+    if SUSPEND_CREATION:
+        update.message.reply_text(texts.get_text("suspend_input", update.message.from_user.language_code)  + "\nTag backup: "+EOF_LINK)
+        return
+
     update.message.reply_text(texts.get_text("welcome_message",update.message.from_user.language_code))
     dbManager.add_chat_to_bcast_list(update.message.chat.id)
 
@@ -214,7 +221,7 @@ def start(bot, update):
 def claim(bot, update):
 
     if SUSPEND_CREATION:
-        update.message.reply_text(texts.get_text("suspend_input", update.message.from_user.language_code))
+        update.message.reply_text(texts.get_text("suspend_input", update.message.from_user.language_code) + "\nTag backup: "+EOF_LINK)
         return
 
     if dbManager.is_user_banned(update.message.from_user.id) == True:
@@ -254,7 +261,7 @@ def claim(bot, update):
 def remove(bot, update):
 
     if SUSPEND_CREATION:
-        update.message.reply_text(texts.get_text("suspend_input", update.message.from_user.language_code))
+        update.message.reply_text(texts.get_text("suspend_input", update.message.from_user.language_code)  + "\nTag backup: "+EOF_LINK)
         return
     
     tag = validate_cmd(update.message.text)
@@ -315,10 +322,18 @@ def info(bot, update):
 
     update.message.reply_text(reply)
 
+    if SUSPEND_CREATION:
+        update.message.reply_text("Tag backup: "+EOF_LINK)
+        return
+
 
 #comando help che mostra un messaggio di aiuto
 @run_async
 def helpme(bot, update):
+    if SUSPEND_CREATION:
+        update.message.reply_text(texts.get_text("suspend_input", update.message.from_user.language_code)  + "\nTag backup: "+EOF_LINK)
+        return
+
     update.message.reply_text(texts.get_text("help_reply",update.message.from_user.language_code))
     parallel.send_stats_event(update.message.from_user.id, update.message, "help")
 
@@ -329,6 +344,9 @@ def helpme(bot, update):
 def top(bot, update):
     update.message.reply_text(get_hashtag_top_list_message(update))
     parallel.send_stats_event(update.message.from_user.id, update.message, "top")
+    if SUSPEND_CREATION:
+        update.message.reply_text("Tag backup: "+EOF_LINK)
+        return
 
 
 #comando edit
@@ -336,7 +354,7 @@ def top(bot, update):
 def edit(bot, update):
 
     if SUSPEND_CREATION:
-        update.message.reply_text(texts.get_text("suspend_input", update.message.from_user.language_code))
+        update.message.reply_text(texts.get_text("suspend_input", update.message.from_user.language_code)  + "\nTag backup: "+EOF_LINK)
         return
 
     if dbManager.is_user_banned(update.message.from_user.id) == True:
@@ -415,6 +433,10 @@ def report(bot, update):
     if res == 3:
         update.message.reply_text(texts.get_text("report_not_allowed",update.message.from_user.language_code))
         return
+    
+    if SUSPEND_CREATION:
+        update.message.reply_text("Tag backup: "+EOF_LINK)
+        return
 
 
 #comando mytags
@@ -435,6 +457,10 @@ def mytags(bot,update):
     update.message.reply_text(texts.get_text("mytags_message",update.message.from_user.language_code) +str(update.message.from_user.id))
 
     parallel.send_stats_event(update.message.from_user.id, update.message, "mytags")
+
+    if SUSPEND_CREATION:
+        update.message.reply_text("Tag backup: "+EOF_LINK)
+        return
 
 
 
@@ -572,6 +598,10 @@ def hashtag_message(bot, update):
 
     if result["type"] == "video":
         bot.sendVideo(update.message.chat.id,result["reply"])
+
+    if SUSPEND_CREATION:
+        update.message.reply_text("Tag backup: "+EOF_LINK)
+        return
 
 
 def get_chat_id(bot,update):
