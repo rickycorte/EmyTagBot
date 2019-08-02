@@ -261,7 +261,7 @@
    },
    "suspend_input":
    {
-        "default": "Ogni servizio offerto da Emy e' in via di chiusura, al piu presto potrai recuperare i tuoi tag preferiti.\n\nGrazie per aver usato Emy fino a ora!"
+        "default": "A partire da Agosto 2019 ogni servizio offerto da @EmyTagBot e' in via di sospensione.\nQuesto significa che gradualmente tutte le funzionalita offerte da Emy verranno sospese sino alla terminazione definitiva del servizio.\n\nNon preoccuparti pero' per i tuoi tag, appena possibile ti informero di come tu possa salvarli e conservarli!\n\nGrazie per aver usato Emy fino a ora!"
    }
    
 }
